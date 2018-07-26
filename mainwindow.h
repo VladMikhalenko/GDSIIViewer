@@ -3,10 +3,10 @@
 
 #include <QMainWindow>
 #include <QObject>
-#include "DrawingArea.h"
-#include "src/GDSIIDesign.h"
-#include "src/GDSIIDesignReader.h"
-#include "src/LayerForView.h"
+#include "inc/GUI/DrawingArea.h"
+#include "inc/GDSIIModel/GDSIIDesign/GDSIIDesign.h"
+#include "inc/DataReader/GDSIIDesignReader.h"
+#include "inc/GUI/LayerForView.h"
 #include "HotSpotScaner.h"
 
 namespace Ui {
@@ -22,13 +22,14 @@ public:
     ~MainWindow();    
 private:
     Ui::MainWindow *ui;
-    DrawingArea* dArea;
 
-    HotSpotScaner* scanner;
+    std::unique_ptr<DrawingArea> dArea;
 
-    LayerForView* layerForView;
-    GDSIIDesign* design;
-    GDSIIDesignReader* designReader;
+    std::shared_ptr<HotSpotScaner> scanner;
+
+    std::shared_ptr<LayerForView> layerForView;
+    std::shared_ptr<GDSIIDesign> design;
+    std::shared_ptr<GDSIIDesignReader> designReader;
 
     bool designLoaded;
 
