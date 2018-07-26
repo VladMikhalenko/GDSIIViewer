@@ -1,19 +1,26 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "DrawingArea.h"
+#include "inc/GUI/DrawingArea.h"
 #include <QDebug>
 #include <QtCore>
 #include <QtWidgets>
 #include <QFileDialog>
 #include <cmath>
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+#include <ctime>
+
+#include "GDSIIDesignEncoder.h"
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    dArea(new DrawingArea(this))
 {
     ui->setupUi(this);
 
-    dArea=new DrawingArea(this);
     dArea->setFixedWidth(ui->horizontalScrollBar->width());
     dArea->setFixedHeight(ui->verticalScrollBar->height());
-    ui->vertLayout->addWidget(dArea);
+
+    ui->vertLayout->addWidget(dArea.get());
+
     this->setFixedHeight(this->height());
     this->setFixedWidth(this->width());
     ResetWindowBorders();
@@ -21,181 +28,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->mainToolBar->setVisible(false);
     ui->statusBar->setEnabled(false);
     currentLayer=0;
-    //Large project exapmle 800x900
-    /*
-    SetProjectWidth(800);
-    SetProjectHeight(900);
-    dArea->SetGlobalWidth(ProjectWidth);
-    dArea->SetGlobalHeight(ProjectHeight);
-    
-    CalculateWindowToProjectCoef();
-
-    QLine p1(100,100,300,650);
-    QLine p2(300,650,400,300);
-    QLine p3(400,300,550,300);
-    QLine p4(550,300,550,100);
-    QLine p5(550,100,250,100);
-
-    QLine p6(500,850,500,400);
-    QLine p7(500,400,750,400);
-    QLine p8(750,400,750,850);
-    QLine p9(750,850,500,850);
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(p1);
-    lines->AddLine(p2);
-    lines->AddLine(p3);
-    lines->AddLine(p4);
-    lines->AddLine(p5);
-    lines->AddLine(p6);
-    lines->AddLine(p7);
-    lines->AddLine(p8);
-    lines->AddLine(p9);
-    */
-    // wide example 1200x200
-    /*SetProjectWidth(1200);
-    SetProjectHeight(200);
-    dArea->SetGlobalWidth(ProjectWidth);
-    dArea->SetGlobalHeight(ProjectHeight);
-    CalculateWindowToProjectCoef();
-
-    QLine p1(250,50,250,150);
-    QLine p2(250,150,850,150);
-    QLine p3(850,150,850,100);
-    QLine p4(850,100,650,100);
-    QLine p5(650,100,650,50);
-    QLine p6(650,50,250,50);
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(p1);
-    lines->AddLine(p2);
-    lines->AddLine(p3);
-    lines->AddLine(p4);
-    lines->AddLine(p5);
-    lines->AddLine(p6);
-    */
-    //если стороны фигуры соотносятся высота к ширине с коеф 0.66 2/3, 4/6 ....
-    // small example 300x200
-    /*SetProjectWidth(300);
-    SetProjectHeight(200);
-    dArea->SetGlobalWidth(ProjectWidth);
-    dArea->SetGlobalHeight(ProjectHeight);
-    CalculateWindowToProjectCoef();
-
-    QLine p1(50,50,250,150);
-    QLine p2(50,150,250,50);
-    QLine p3(150,150,150,50);
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(p1);
-    lines->AddLine(p2);
-    lines->AddLine(p3);
-    */
-    // small example 200x300
-    /*SetProjectWidth(200);
-    SetProjectHeight(300);
-    dArea->SetGlobalWidth(ProjectWidth);
-    dArea->SetGlobalHeight(ProjectHeight);
-    CalculateWindowToProjectCoef();
-
-    QLine p1(100,300,100,0);
-    QLine p2(50,200,150,200);
-    QLine p3(150,200,150,150);
-    QLine p4(50,200,50,150);
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(p1);
-    lines->AddLine(p2);
-    lines->AddLine(p3);
-    lines->AddLine(p4);
-    */
-    /*
-    SetProjectWidth(60);
-    SetProjectHeight(10);
-    dArea->SetGlobalWidth(ProjectWidth);
-    dArea->SetGlobalHeight(ProjectHeight);
-    CalculateWindowToProjectCoef();
-
-    QLine p1(5,5,25,15);
-    QLine p2(5,15,25,5);
-    QLine p3(15,15,15,5);
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(p1);
-    lines->AddLine(p2);
-    lines->AddLine(p3);
-    */
-    /*
-    //rectangle
-    QLine left(400,100,400,200);
-    QLine top(400,200,600,200);
-    QLine right(600,200,600,100);
-    QLine bottom(600,100,400,100);
-    //path
-    QLine pt1(0,0,50,100);
-    QLine pt2(50,100,50,300);
-    QLine pt3(50,300,200,300);
-
-    //polygon
-    QLine f1(150,100,300,100);
-    QLine f2(300,100,300,130);
-    QLine f3(300,130,200,130);
-    QLine f4(200,130,200,180);
-    QLine f5(200,180,150,180);
-    QLine f6(150,180,150,100);
-
-    QLine cl(0,dArea->height()-31,300,dArea->height()-31);
-
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(left);
-    lines->AddLine(top);
-    lines->AddLine(right);
-    lines->AddLine(bottom);
-    lines->AddLine(pt1);
-    lines->AddLine(pt2);
-    lines->AddLine(pt3);
-    lines->AddLine(f1);
-    lines->AddLine(f2);
-    lines->AddLine(f3);
-    lines->AddLine(f4);
-    lines->AddLine(f5);
-    lines->AddLine(f6);
-    lines->AddLine(cl);
-    */
-    /*  621x341
-    SetProjectWidth(621);
-    SetProjectHeight(341);
-    dArea->SetGlobalWidth(ProjectWidth);
-    dArea->SetGlobalHeight(ProjectHeight);
-
-    CalculateWindowToProjectCoef();
-
-    QLine p1(100,100,300,650);
-    QLine p2(300,650,400,300);
-    QLine p3(400,300,550,300);
-    QLine p4(550,300,550,100);
-    QLine p5(550,100,250,100);
-
-    QLine p6(500,850,500,400);
-    QLine p7(500,400,750,400);
-    QLine p8(750,400,750,850);
-    QLine p9(750,850,500,850);
-
-    LineContainer* lines=new LineContainer();
-    lines->AddLine(p1);
-    lines->AddLine(p2);
-    lines->AddLine(p3);
-    lines->AddLine(p4);
-    lines->AddLine(p5);
-    lines->AddLine(p6);
-    lines->AddLine(p7);
-    lines->AddLine(p8);
-    lines->AddLine(p9);
-
-    */
-
-    //dArea->SetLineContainer(lines);
 
     //ui->spbZoom->setFocusPolicy(Qt::NoFocus);
     //ui->spbLayer->setFocusPolicy(Qt::NoFocus);
@@ -209,11 +41,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     QObject::connect(ui->spbLayer,SIGNAL(valueChanged(int)),this,SLOT(LayerValueChanged(int)));
 
-    QObject::connect(this,SIGNAL(ZoomValueUpdated(double)),dArea,SLOT(ScaleValueChanged(double)));
+    QObject::connect(this,SIGNAL(ZoomValueUpdated(double)),dArea.get(),SLOT(ScaleValueChanged(double)));
     //QObject::connect(this,SIGNAL(ZoomValueUpdated(double)),this,SLOT(CalculateWindowPoints(double)));
 
-    QObject::connect(ui->verticalScrollBar,SIGNAL(valueChanged(int)),dArea,SLOT(VerticalScrollValueChanged(int)));
-    QObject::connect(ui->horizontalScrollBar,SIGNAL(valueChanged(int)),dArea,SLOT(HorizontalScrollValueChanged(int)));
+    QObject::connect(ui->verticalScrollBar,SIGNAL(valueChanged(int)),dArea.get(),SLOT(VerticalScrollValueChanged(int)));
+    QObject::connect(ui->horizontalScrollBar,SIGNAL(valueChanged(int)),dArea.get(),SLOT(HorizontalScrollValueChanged(int)));
 
     QObject::connect(ui->verticalScrollBar,SIGNAL(valueChanged(int)),this,SLOT(VerticalScrollChanged(int)));
     QObject::connect(ui->horizontalScrollBar,SIGNAL(valueChanged(int)),this,SLOT(HorizontalScrollChanged(int)));
@@ -238,9 +70,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete design;
-    delete layerForView;
-    delete dArea;
+//    delete design;
+//    delete layerForView;
+//    delete dArea;
 }
 
 void MainWindow::paintEvent(QPaintEvent *event){
@@ -272,10 +104,12 @@ void MainWindow::CalculateWindowPoints(double value){
     winMaxX=dArea->width()*winProjCoef/value+winMinX;
     winMaxY=dArea->height()*winProjCoef/value+winMinY;
 
-    qDebug()<<"Window borders:["<<winMinX<<","<<winMinY<<"], "<<"["<<winMaxX<<","<<winMaxY<<"]";
+    //qDebug()<<"Window borders:["<<winMinX<<","<<winMinY<<"], "<<"["<<winMaxX<<","<<winMaxY<<"]";
 }
 
 void MainWindow::ZoomValueChanged(int value){
+    static int fucking_count=0;
+    qDebug()<<"Call zoom val changed"<<fucking_count++<<"\n";
     zoomCoef=ZoomConvert(value);
     //qDebug()<<"COEF value:"<<zoomCoef;
     emit ZoomValueUpdated(zoomCoef);
@@ -309,7 +143,14 @@ void MainWindow::LayerValueChanged(int value){
 
 void MainWindow::GetNewLayerFromDesign()
 {
-    ui->rbOne->isChecked()?layerForView=design->GetLayerForView(currentLayer):layerForView=design->GetSeveralLayersForView(currentLayer);
+    if(ui->rbOne->isChecked())
+    {
+        layerForView=design->GetLayerForView(currentLayer);
+    }
+    else
+    {
+        layerForView=design->GetFullDesignLayerForView();//GetAllDesignLayersForView();
+    }
     //qDebug()<<"Layer size:"<<layerForView->GetLayerWidth()<<"x"<<layerForView->GetLayerHeight();
 }
 
@@ -318,9 +159,10 @@ void MainWindow::PrepareLineContainerForDrawing()
     if(layerForView!=0)
     {
         //добавить учет позиции окна
-        LineContainer* cont=layerForView->GetLineContainerForArea(winMinX,winMinY,winMaxX,winMaxY);
-        qDebug()<<"Layer size:"<<cont->GetAreaWidth()<<"x"<<cont->GetAreaHeight();
-
+        std::shared_ptr<GDSIILineContainer> cont=layerForView->GetLineContainerForArea(winMinX,winMinY,winMaxX,winMaxY);
+        //qDebug()<<"Layer size:"<<cont->GetAreaWidth()<<"x"<<cont->GetAreaHeight();
+        //GDSIIDesignEncoder::GetInstance().PrepareData(*cont);
+        GDSIIDesignEncoder::GetInstance().Encode(*cont,1);
         SetProjectWidth(cont->GetAreaWidth());
         SetProjectHeight(cont->GetAreaHeight());
         CalculateWindowToProjectCoef();
@@ -333,9 +175,20 @@ void MainWindow::PrepareLineContainerForDrawing()
 }
 
 void MainWindow::BtnOkClick(){
+    std::clock_t start;
+    double duration;
     ResetWindowBorders();
+
+    start=std::clock();
     GetNewLayerFromDesign();
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    qDebug()<<"Layer from design time:"<<duration<<"\n";
+
+    start=std::clock();
     PrepareLineContainerForDrawing();
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    qDebug()<<"Prepare container time:"<<duration<<"\n";
+
     ui->spbZoom->setValue(100);
     repaint();
 }
@@ -351,11 +204,11 @@ double MainWindow::ZoomConvert(int value)
 
 void MainWindow::RadioOneChanged()
 {
-    QMessageBox::information(this,"OUUUUU","ONE WAS SELECTED");
+    //QMessageBox::information(this,"OUUUUU","ONE WAS SELECTED");
 }
 void MainWindow::RadioSeveralChanged()
 {
-    QMessageBox::information(this,"OUUUUU","SEVERAL WAS SELECTED");
+    //QMessageBox::information(this,"OUUUUU","SEVERAL WAS SELECTED");
 }
 
 void MainWindow::SetProjectHeight(int height){
@@ -390,7 +243,7 @@ void MainWindow::on_actionOpen_triggered()
         else GlobalOptions::SetSourceType(FILE_SOURCE);
         //if(design!=0)
         //    ClearDataBeforeLoading();
-        designReader=new GDSIIDesignReader();
+        designReader=std::make_shared<GDSIIDesignReader>(GDSIIDesignReader());
         designLoaded=false;
         try
         {    
@@ -399,10 +252,11 @@ void MainWindow::on_actionOpen_triggered()
             if(design!=0)
             {
                designLoaded=true;
-               scanner=new HotSpotScaner(design);
+
+               scanner=std::make_shared<HotSpotScaner>(HotSpotScaner(design));
                QMessageBox::information(this,"Success","Design from file '"+fileInfo.baseName()+"' was successfully loaded");
-               setWindowTitle("GDSIIViewer - "+fileInfo.baseName()+"."+extension);
-               design->ShowInfo();
+               setWindowTitle("GDSIIViewer - "+fileInfo.baseName()+"."+extension+" Separate Layers: ["+QString::number(design->GetLayersSet().size())+"]");
+               //design->ShowInfo();
                ui->btnOK->setEnabled(true);
                ui->spbLayer->setEnabled(true);
                ui->spbZoom->setEnabled(true);
@@ -415,7 +269,6 @@ void MainWindow::on_actionOpen_triggered()
                 ui->btnOK->setEnabled(true);
                 ui->spbLayer->setEnabled(true);
                 ui->spbZoom->setEnabled(true);
-
             }
 
 
@@ -454,7 +307,6 @@ void MainWindow::ResetWindowBorders()
     winMinY=INT32_MIN;//std::numeric_limits<double>::min();
     winMaxX=INT32_MAX;//std::numeric_limits<double>::max();
     winMaxY=INT32_MAX;//std::numeric_limits<double>::min();
-
 }
 void MainWindow::ClearDataBeforeLoading()
 {
@@ -463,8 +315,10 @@ void MainWindow::ClearDataBeforeLoading()
     if(layerForView!=0)
         layerForView->ClearData();
     //Element p=design->GetStructureByName("EXAMPLE2")->GetElementByIndex(0);
-    delete design;
-    delete designReader;
+    design.reset();
+    designReader.reset();
+    //    delete design;
+//    delete designReader;
 
     layerForView=0;
     design=0;
