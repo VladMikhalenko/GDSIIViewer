@@ -1,4 +1,4 @@
-#include "Record56_Endmasks.h"
+#include "inc/GDSIIModel/GDSIIRecords/record56_endmasks.h"
 
 Record56_Endmasks::Record56_Endmasks() {
     recordID = ENDMASKS;

@@ -1,4 +1,4 @@
-#include "Record26_Strans.h"
+#include "inc/GDSIIModel/GDSIIRecords/record26_strans.h"
 
 Record26_Strans::Record26_Strans() {
     IGDSIISource* source=SourceFactory::GetSource();

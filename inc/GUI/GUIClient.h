@@ -13,7 +13,7 @@
 
 #ifndef GUICLIENT_H
 #define GUICLIENT_H
-#include "GDSIIDesign.h"
+#include "inc/GDSIIModel/GDSIIDesign/GDSIIDesign.h"
 
 class GUIClient {
 public:

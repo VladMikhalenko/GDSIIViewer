@@ -1,4 +1,4 @@
-#include "Record47_Plex.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record47_Plex.h"
 
 Record47_Plex::Record47_Plex() {
     IGDSIISource* source = SourceFactory::GetSource();

@@ -1,4 +1,4 @@
-#include "Record24_Spacing.h"
+#include "inc/GDSIIModel/GDSIIRecords/record24_spacing.h"
 
 Record24_Spacing::Record24_Spacing() {
 }

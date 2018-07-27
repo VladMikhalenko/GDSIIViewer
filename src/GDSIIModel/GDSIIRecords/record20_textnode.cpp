@@ -1,4 +1,4 @@
-#include "Record20_Textnode.h"
+#include "inc/GDSIIModel/GDSIIRecords/record20_textnode.h"
 
 Record20_Textnode::Record20_Textnode() {
     recordID  = TEXTNODE;

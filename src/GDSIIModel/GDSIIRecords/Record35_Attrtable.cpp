@@ -1,6 +1,6 @@
-#include "Record35_Attrtable.h"
-#include "GDSIISourceConsole.h"
-#include "BinDataTypeReader.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record35_Attrtable.h"
+#include "inc/DataSource/GDSIISourceConsole.h"
+#include "inc/DataReader/BinDataTypeReader.h"
 #include <iostream>
 
 Record35_Attrtable::Record35_Attrtable(int count) {

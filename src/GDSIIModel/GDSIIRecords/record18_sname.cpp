@@ -1,4 +1,4 @@
-#include "Record18_Sname.h"
+#include "inc/GDSIIModel/GDSIIRecords/record18_sname.h"
 
 Record18_Sname::Record18_Sname(int str_size) {
     IGDSIISource* source=SourceFactory::GetSource();

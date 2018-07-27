@@ -1,4 +1,4 @@
-#include "Record49_Endextn.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record49_Endextn.h"
 
 Record49_Endextn::Record49_Endextn() {
     IGDSIISource* source = SourceFactory::GetSource();

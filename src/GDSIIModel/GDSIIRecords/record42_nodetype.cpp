@@ -1,4 +1,4 @@
-#include "Record42_Nodetype.h"
+#include "inc/GDSIIModel/GDSIIRecords/record42_nodetype.h"
 
 Record42_Nodetype::Record42_Nodetype() {
     IGDSIISource* source=SourceFactory::GetSource();

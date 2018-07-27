@@ -1,4 +1,4 @@
-#include "Record17_Endel.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record17_Endel.h"
 
 Record17_Endel::Record17_Endel() {
     recordID = ENDEL;

@@ -1,4 +1,4 @@
-#include "Record59_Libsecur.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record59_Libsecur.h"
 
 Record59_Libsecur::Record59_Libsecur(int count)
 {

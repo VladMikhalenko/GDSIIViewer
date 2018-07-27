@@ -1,4 +1,4 @@
-#include "Record51_Tapecode.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record51_Tapecode.h"
 
 Record51_Tapecode::Record51_Tapecode() {
     IGDSIISource* source = SourceFactory::GetSource();

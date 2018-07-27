@@ -1,4 +1,4 @@
-#include "Record48_Bgnextn.h"
+#include "inc/GDSIIModel/GDSIIRecords/record48_bgnextn.h"
 
 Record48_Bgnextn::Record48_Bgnextn() {
     IGDSIISource* source=SourceFactory::GetSource();

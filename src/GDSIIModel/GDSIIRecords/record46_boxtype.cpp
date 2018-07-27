@@ -1,4 +1,4 @@
-#include "Record46_Boxtype.h"
+#include "inc/GDSIIModel/GDSIIRecords/record46_boxtype.h"
 
 Record46_Boxtype::Record46_Boxtype() {
     IGDSIISource* source=SourceFactory::GetSource();

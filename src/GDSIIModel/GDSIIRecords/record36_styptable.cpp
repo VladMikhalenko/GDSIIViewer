@@ -1,4 +1,4 @@
-#include "Record36_Styptable.h"
+#include "inc/GDSIIModel/GDSIIRecords/record36_styptable.h"
 
 Record36_Styptable::Record36_Styptable() {
     IGDSIISource* source=SourceFactory::GetSource();

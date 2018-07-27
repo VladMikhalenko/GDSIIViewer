@@ -1,5 +1,5 @@
 #pragma once
-#include "Record39_Elkey.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record39_Elkey.h"
 
 Record39_Elkey::Record39_Elkey() {
     IGDSIISource* source = SourceFactory::GetSource();

@@ -1,4 +1,4 @@
-#include "Record45_Box.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record45_Box.h"
 
 Record45_Box::Record45_Box() {
     recordID = BOX;

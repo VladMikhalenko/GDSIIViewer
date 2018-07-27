@@ -1,4 +1,4 @@
-#include "Record38_Elflags.h"
+#include "inc/GDSIIModel/GDSIIRecords/record38_elflags.h"
 
 Record38_Elflags::Record38_Elflags() {
     IGDSIISource* source=SourceFactory::GetSource();

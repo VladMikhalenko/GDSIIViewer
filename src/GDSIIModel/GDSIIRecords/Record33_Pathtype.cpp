@@ -1,4 +1,4 @@
-#include "Record33_Pathtype.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record33_Pathtype.h"
 
 Record33_Pathtype::Record33_Pathtype()
 {

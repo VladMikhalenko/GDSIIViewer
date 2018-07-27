@@ -1,4 +1,4 @@
-#include "Record32_Fonts.h"
+#include "inc/GDSIIModel/GDSIIRecords/record32_fonts.h"
 
 Record32_Fonts::Record32_Fonts(int str_size) {
     IGDSIISource* source=SourceFactory::GetSource();

@@ -1,4 +1,4 @@
-#include "Record21_Node.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record21_Node.h"
 
 Record21_Node::Record21_Node() {
     recordID = NODE;
