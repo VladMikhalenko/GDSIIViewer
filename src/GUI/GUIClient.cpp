@@ -11,7 +11,7 @@
  * Created on 2 января 2017 г., 18:44
  */
 
-#include "GUIClient.h"
+#include "inc/GUI/GUIClient.h"
 
 GUIClient::GUIClient() {
 }

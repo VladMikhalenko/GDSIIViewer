@@ -1,4 +1,4 @@
-#include "Record55_Mask.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record55_Mask.h"
 
 Record55_Mask::Record55_Mask(int count) {
    /*_mask = "";

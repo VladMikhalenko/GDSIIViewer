@@ -1,4 +1,4 @@
-#include "Record57_Libdirsize.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record57_Libdirsize.h"
 
 Record57_Libdirsize::Record57_Libdirsize() {
     IGDSIISource* source = SourceFactory::GetSource();

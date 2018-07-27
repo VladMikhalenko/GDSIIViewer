@@ -1,4 +1,4 @@
-#include "Record37_Strtype.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record37_Strtype.h"
 
 Record37_Strtype::Record37_Strtype()
 {

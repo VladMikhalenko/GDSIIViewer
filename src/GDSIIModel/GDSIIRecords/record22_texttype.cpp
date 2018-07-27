@@ -1,4 +1,4 @@
-#include "Record22_Texttype.h"
+#include "inc/GDSIIModel/GDSIIRecords/record22_texttype.h"
 
 Record22_Texttype::Record22_Texttype() {
     IGDSIISource* source=SourceFactory::GetSource();

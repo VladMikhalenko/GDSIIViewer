@@ -1,4 +1,4 @@
-#include "Record19_Colrow.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record19_Colrow.h"
 
 Record19_Colrow::Record19_Colrow() {
     IGDSIISource* source=SourceFactory::GetSource();

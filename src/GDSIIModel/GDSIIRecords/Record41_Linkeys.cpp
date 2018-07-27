@@ -1,4 +1,4 @@
-#include "Record41_Linkeys.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record41_Linkeys.h"
 
 Record41_Linkeys::Record41_Linkeys() {
     IGDSIISource* source = SourceFactory::GetSource();

@@ -1,4 +1,4 @@
-#include "Record58_Srfname.h"
+#include "inc/GDSIIModel/GDSIIRecords/record58_srfname.h"
 
 Record58_Srfname::Record58_Srfname(int str_size) {
     IGDSIISource* source=SourceFactory::GetSource();

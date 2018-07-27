@@ -1,4 +1,4 @@
-#include "Record44_Propvalue.h"
+#include "inc/GDSIIModel/GDSIIRecords/record44_propvalue.h"
 
 Record44_Propvalue::Record44_Propvalue(int str_size) {
     IGDSIISource* source=SourceFactory::GetSource();

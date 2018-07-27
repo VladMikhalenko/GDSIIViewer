@@ -1,4 +1,4 @@
-#include "Record40_Linktype.h"
+#include "inc/GDSIIModel/GDSIIRecords/record40_linktype.h"
 
 Record40_Linktype::Record40_Linktype() {
     IGDSIISource* source=SourceFactory::GetSource();

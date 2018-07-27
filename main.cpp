@@ -1,11 +1,11 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "GaussianKernel.h"
+#include "inc/LithographyTools/GaussianKernel.h"
 #include <memory>
 #include <iomanip>
 #include "inc/LithographyTools/LineAnalyzer.h"
 #include "inc/GUI/GDSIILineContainer.h"
-#include "GDSIIDesignEncoder.h"
+#include "utils/Encoder/GDSIIDesignEncoder.h"
 //функци распределения значений цвета на промежутке y1 y2
 double FindYCoordT(double x1,double y1, double x2,double y2,double x)
 {

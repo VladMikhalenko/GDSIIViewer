@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "inc/GUI/DrawingArea.h"
 #include <QDebug>
 #include <QtCore>
 #include <QtWidgets>
@@ -8,7 +7,7 @@
 #include <cmath>
 #include <ctime>
 
-#include "GDSIIDesignEncoder.h"
+#include "utils/Encoder/GDSIIDesignEncoder.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),

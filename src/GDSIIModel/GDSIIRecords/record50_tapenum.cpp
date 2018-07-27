@@ -1,4 +1,4 @@
-#include "Record50_Tapenum.h"
+#include "inc/GDSIIModel/GDSIIRecords/record50_tapenum.h"
 
 Record50_Tapenum::Record50_Tapenum() {
     IGDSIISource* source=SourceFactory::GetSource();

@@ -1,4 +1,4 @@
-#include "Record27_Mag.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record27_Mag.h"
 
 Record27_Mag::Record27_Mag()
 {

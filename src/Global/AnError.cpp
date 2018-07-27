@@ -11,7 +11,7 @@
  * Created on 2 января 2017 г., 17:28
  */
 
-#include "AnError.h"
+#include "inc/Global/AnError.h"
 
 AnError::AnError() {
 }

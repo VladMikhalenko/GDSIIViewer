@@ -1,4 +1,4 @@
-#include "Record52_Strclass.h"
+#include "inc/GDSIIModel/GDSIIRecords/record52_strclass.h"
 
 Record52_Strclass::Record52_Strclass() {
     IGDSIISource* source=SourceFactory::GetSource();
@@ -15,7 +15,7 @@ Record52_Strclass::~Record52_Strclass() {
 void Record52_Strclass::Show() {
     std::cout<<"<Record38_Elflags..."<<std::endl;
     for (int i = 0; i < 16; i++) {
-        cout<<"Bit #"<<i<<": "<<_Info[i]<<endl;
+        std::cout<<"Bit #"<<i<<": "<<_Info[i]<<std::endl;
     }
     std::cout<<"...Record38_Elflags>"<<std::endl;
 }

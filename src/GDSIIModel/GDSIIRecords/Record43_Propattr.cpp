@@ -1,4 +1,4 @@
-#include "Record43_Propattr.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record43_Propattr.h"
 
 Record43_Propattr::Record43_Propattr() {
     IGDSIISource* source = SourceFactory::GetSource();

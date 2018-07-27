@@ -1,4 +1,4 @@
-#include "Record25_String.h"
+#include "inc/GDSIIModel/GDSIIRecords/Record25_String.h"
 
 Record25_String::Record25_String(int count) {
     /*_content = "";

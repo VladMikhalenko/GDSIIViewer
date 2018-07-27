@@ -1,4 +1,4 @@
-#include "Record34_Generations.h"
+#include "inc/GDSIIModel/GDSIIRecords/record34_generations.h"
 
 Record34_Generations::Record34_Generations() {
     IGDSIISource* source=SourceFactory::GetSource();

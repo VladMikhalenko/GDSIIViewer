@@ -1,4 +1,4 @@
-#include "Record28_Angle.h"
+#include "inc/GDSIIModel/GDSIIRecords/record28_angle.h"
 
 Record28_Angle::Record28_Angle() {
     IGDSIISource* source=SourceFactory::GetSource();

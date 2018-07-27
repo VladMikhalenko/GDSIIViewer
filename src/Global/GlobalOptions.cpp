@@ -1,4 +1,4 @@
-#include "GlobalOptions.h"
+#include "inc/Global/GlobalOptions.h"
 
 GlobalOptions::GlobalOptions(){
 
