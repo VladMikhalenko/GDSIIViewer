@@ -18,6 +18,7 @@ public:
     void SetAreaWidth(int width);
     void SetAreaHeight(int height);
 
+    void PerformShift();
 private:
     std::vector<GDSIILine> lineArray;
     int areaWidth;

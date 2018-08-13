@@ -4,13 +4,13 @@
 #include "inc/GDSIIGeometry/Primitives/GDSIILine.h"
 #include <vector>
 class GDSIILineContainer;
-
+struct GDSIISuperPixel;
 enum LineType{
     UNDEFINED_LINE=-1,
-    VERTICAL,
-    HORIZONTAL,
-    DIAGONAL_ASC,
-    DIAGONAL_DESC
+    VERTICAL_LINE,
+    HORIZONTAL_LINE,
+    DIAGONAL_ASC_LINE,
+    DIAGONAL_DESC_LINE
 };
 
 enum CodeType
@@ -57,6 +57,8 @@ public:
     GDSIIPoint GetLeastPoint(const GDSIILine &l) const;
     GDSIIPoint GetGreatPoint(const GDSIILine &l) const;
     bool CompareLines(const GDSIIPoint &p1, const GDSIIPoint &p2) const;
+    bool LineBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSIILine &l);
+    bool PointBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSIIPoint &p);
 
     void SortLineContainer(GDSIILineContainer& container);
 };

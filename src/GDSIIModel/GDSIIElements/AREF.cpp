@@ -2,8 +2,8 @@
 
 AREF::AREF():
     GDSIIElement(),
-    angleFlag(false),
-    magFlag(false)
+    magFlag(false),
+    angleFlag(false)
 {
     ID=EL_AREF;
 }
@@ -36,7 +36,7 @@ void AREF::Show(){
     std::cout<<"---AREF---:\n";
     GDSIIElement::Show();
     std::cout<<"Points:\n";
-    for(int i=0;i<sizeof(points)/sizeof(points[0]);i++)
+    for(unsigned i=0;i<sizeof(points)/sizeof(points[0]);i++)
     {
         std::cout<<"--["<<points[i].GetX()<<","<<points[i].GetY()<<"]\n";
     }

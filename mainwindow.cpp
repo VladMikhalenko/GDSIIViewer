@@ -161,7 +161,8 @@ void MainWindow::PrepareLineContainerForDrawing()
         std::shared_ptr<GDSIILineContainer> cont=layerForView->GetLineContainerForArea(winMinX,winMinY,winMaxX,winMaxY);
         //qDebug()<<"Layer size:"<<cont->GetAreaWidth()<<"x"<<cont->GetAreaHeight();
         //GDSIIDesignEncoder::GetInstance().PrepareData(*cont);
-        GDSIIDesignEncoder::GetInstance().Encode(*cont,1);
+        cont->PerformShift();
+        GDSIIDesignEncoder::GetInstance().Encode(*cont,1000);
         SetProjectWidth(cont->GetAreaWidth());
         SetProjectHeight(cont->GetAreaHeight());
         CalculateWindowToProjectCoef();

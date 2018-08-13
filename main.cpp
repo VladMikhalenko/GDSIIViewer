@@ -156,6 +156,45 @@ void MapPrinter(const std::map<int,int>& map)
         }
     }
 }
+
+int RunMAIN(int argc, char *argv[])
+{
+    QStringList paths = QCoreApplication::libraryPaths();
+    paths.append(".");
+    paths.append("platforms");
+    QCoreApplication::setLibraryPaths(paths);
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+}
+int RunTEST1()
+{
+    GDSIILine a(15,15,15,25);
+    GDSIILine b(15,25,25,25);
+    GDSIILine c(25,25,25,15);
+    GDSIILine d(25,15,15,15);
+
+    GDSIILine e(0,0,0,40);
+    GDSIILine f(0,40,40,40);
+    GDSIILine g(40,40,40,0);
+    GDSIILine h(40,0,0,0);
+
+    GDSIILineContainer cont;
+    cont.AddLine(b);
+    cont.AddLine(c);
+    cont.AddLine(a);
+    cont.AddLine(d);
+    cont.AddLine(e);
+    cont.AddLine(f);
+    cont.AddLine(g);
+    cont.AddLine(h);
+    ContainerPrinter(cont);
+    std::cout<<"-----"<<std::endl;
+    GDSIIDesignEncoder::GetInstance().Encode(cont,10);
+    std::cout<<"-----"<<std::endl;
+    return 0;
+}
 int main(int argc, char *argv[])
 {
 //    kernel_type kernel=GaussianKernel::CalculateGaussian2DKernel(100);
@@ -200,45 +239,7 @@ int main(int argc, char *argv[])
 //GDSIILine fd(10,2,11,5);
 //GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
 
-GDSIILine a(15,15,15,25);
-GDSIILine b(15,25,25,25);
-GDSIILine c(25,25,25,15);
-GDSIILine d(25,15,15,15);
 
-GDSIILine e(0,0,0,40);
-GDSIILine f(0,40,40,40);
-GDSIILine g(40,40,40,0);
-GDSIILine h(40,0,0,0);
-
-GDSIILineContainer cont;
-cont.AddLine(b);
-cont.AddLine(c);
-cont.AddLine(a);
-cont.AddLine(d);
-cont.AddLine(e);
-cont.AddLine(f);
-cont.AddLine(g);
-cont.AddLine(h);
-ContainerPrinter(cont);
-std::cout<<"-----"<<std::endl;
-GDSIIDesignEncoder::GetInstance().Encode(cont,10);
-std::cout<<"-----"<<std::endl;
-//const int blockLen = 4;
-//std::string s = "0000065004300000";
-//for(auto it = s.end();it>s.begin();it-=blockLen)
-//{
-//    int pos = s.size()-(s.end()-(it-blockLen));
-//    std::string sub = s.substr(pos,blockLen);
-//    std::cout<<sub<<std::endl;
-//}
-
-return 0;
-//    QStringList paths = QCoreApplication::libraryPaths();
-//    paths.append(".");
-//    paths.append("platforms");
-//    QCoreApplication::setLibraryPaths(paths);
-//    QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-//    return a.exec();
+//return RunTEST1();
+return RunMAIN(argc,argv);
 }

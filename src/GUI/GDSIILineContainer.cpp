@@ -58,3 +58,18 @@ int GDSIILineContainer::GetAreaHeight()
 {
     return areaHeight;
 }
+
+void GDSIILineContainer::PerformShift()
+{
+    int x = bottomX < 0 ? -bottomX : 0;
+    int y = bottomY < 0 ? -bottomY : 0;
+    if(x|y)
+    {
+        const GDSIIPoint p(x,y);
+        for(auto item = lineArray.begin(); item != lineArray.end(); item++)
+        {
+            item->SetP1(item->GetP1()+p);
+            item->SetP2(item->GetP2()+p);
+        }
+    }
+}
