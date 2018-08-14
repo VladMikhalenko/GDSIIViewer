@@ -15,7 +15,7 @@ void Box::Show()
     std::cout<<"---BOX---"<<std::endl;
     GDSIIElement::Show();
     std::cout<<"Points:\n";
-    for(int i=0;i<sizeof(points)/sizeof(points[0]);i++)
+    for(unsigned i=0;i<sizeof(points)/sizeof(points[0]);i++)
     {
         std::cout<<"--["<<points[i].GetX()<<","<<points[i].GetY()<<"]\n";
     }

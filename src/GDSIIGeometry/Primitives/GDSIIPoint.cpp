@@ -21,11 +21,11 @@ void GDSIIPoint::SetY(int value)
     _y=value;
 }
 
-GDSIIPoint GDSIIPoint::operator -(GDSIIPoint &p)
+GDSIIPoint GDSIIPoint::operator -(const GDSIIPoint &p)
 {
     return GDSIIPoint(GetX()-p.GetX(),GetY()-p.GetY());
 }
-GDSIIPoint GDSIIPoint::operator +(GDSIIPoint &p)
+GDSIIPoint GDSIIPoint::operator +(const GDSIIPoint &p)
 {
     return GDSIIPoint(GetX()+p.GetX(),GetY()+p.GetY());
 }

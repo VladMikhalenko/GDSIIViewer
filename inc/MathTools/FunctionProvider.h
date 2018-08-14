@@ -14,6 +14,8 @@ public:
     static int GetLineCrossX(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4);
     static int GetLineCrossY(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4);
     static int GetLineCrossY(int x3, int y3, int x4, int y4, int x_value);
+    static double GetTan(int x1, int y1, int x2, int y2);
+
 };
 
 #endif // FUNCTIONPROVIDER_H

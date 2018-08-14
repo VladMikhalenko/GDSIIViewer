@@ -2,7 +2,7 @@
 #include "math.h"
 #include "inc/MathTools/FunctionProvider.h"
 #include "inc/GUI/GDSIILineContainer.h"
-
+#include "utils/Encoder/GDSIIDesignEncoder.h"
 LineAnalyzer::LineAnalyzer()
 {
 
@@ -13,22 +13,20 @@ LineType LineAnalyzer::GetLineType(const GDSIILine &line)
     if(line.GetP1().GetX()==line.GetP2().GetX() &&
        line.GetP1().GetY()!=line.GetP2().GetY())
     {
-        return VERTICAL;
+        return VERTICAL_LINE;
     }
     else if(line.GetP1().GetX()!=line.GetP2().GetX() &&
             line.GetP1().GetY()==line.GetP2().GetY())
     {
-        return HORIZONTAL;
+        return HORIZONTAL_LINE;
     }
-    else if(line.GetP1().GetX() < line.GetP2().GetX() &&
-            line.GetP1().GetY() < line.GetP2().GetY())
+    else if(line.GetP1().GetY() < line.GetP2().GetY())
     {
-        return DIAGONAL_ASC;
+        return DIAGONAL_ASC_LINE;
     }
-    else if(line.GetP1().GetX() > line.GetP2().GetX() &&
-            line.GetP1().GetY() > line.GetP2().GetY())
+    else if(line.GetP1().GetY() > line.GetP2().GetY())
     {
-        return DIAGONAL_DESC;
+        return DIAGONAL_DESC_LINE;
     }
     else return UNDEFINED_LINE;
 }
@@ -54,12 +52,12 @@ bool LineAnalyzer::CanAnalyzeLines(const GDSIILine &l1, const GDSIILine &l2, int
         //TROUBLE WITH ALLOWED DISTANCE -> THERE A THRESHOLD VALUE WHEN ALGORYTHM BEGINS TO LET FAR LOCATED LINES TO COOPERATE
         switch(GetLineType(l1))
         {
-            case HORIZONTAL:
+            case HORIZONTAL_LINE:
                 actualDist=y11>y21?y11-y21:y21-y11;
                 return ((x11<=x21 && x12 >=x21) || (x11<=x22 && x12 >=x22)  ||
                         (x21<=x11 && x22 >=x11) || (x21<=x12 && x22 >=x12)) &&
                         (actualDist<=allowedDist);
-            case VERTICAL:
+            case VERTICAL_LINE:
                 actualDist=x11>x21?x11-x21:x21-x11;
                 return ((y11<=y21 && y12 >=y21) || (y11<=y22 && y12 >=y22)  ||
                         (y21<=y11 && y22 >=y11) || (y21<=y12 && y22 >=y12)) &&
@@ -78,12 +76,12 @@ int LineAnalyzer::GetDistanceBetween(const GDSIILine &l1, const GDSIILine &l2, L
         return -1;
     switch (type)
     {
-        case HORIZONTAL:
+        case HORIZONTAL_LINE:
             return l2.GetP1().GetY()>l1.GetP1().GetY()?
                         l2.GetP1().GetY()-l1.GetP1().GetY():
                         l1.GetP1().GetY()-l2.GetP1().GetY();
 
-        case VERTICAL:
+        case VERTICAL_LINE:
             return l2.GetP1().GetX()>l1.GetP1().GetX()?
                         l2.GetP1().GetX()-l1.GetP1().GetX():
                         l1.GetP1().GetX()-l2.GetP1().GetX();
@@ -95,9 +93,9 @@ int LineAnalyzer::GetLineLength(const GDSIILine &line)
 {
     switch(GetLineType(line))
     {
-        case HORIZONTAL:
+        case HORIZONTAL_LINE:
             return abs(line.GetP1().GetX()-line.GetP2().GetX());
-        case VERTICAL:
+        case VERTICAL_LINE:
             return abs(line.GetP1().GetY()-line.GetP2().GetY());
         default: return -1;
     }
@@ -113,12 +111,12 @@ void LineAnalyzer::ParseLine(const GDSIILine &line,int &left, int &right, int &b
 
     switch(GetLineType(line))
     {
-        case HORIZONTAL:
+        case HORIZONTAL_LINE:
             left=x1<x2?x1:x2;
             right=x1>x2?x1:x2;
             bottom=top=y1;
             break;
-        case VERTICAL:
+        case VERTICAL_LINE:
             bottom=y1<y2?y1:y2;
             top=y1>y2?y1:y2;
             left=right=x1;
@@ -143,12 +141,12 @@ GDSIILine LineAnalyzer::GetMiddlePath(const GDSIILine &l1, const GDSIILine &l2, 
 
         switch(lType)
         {
-            case HORIZONTAL:
+            case HORIZONTAL_LINE:
                 bottomY=topY=l1Bottom>l2Bottom?l1Bottom-halfDist:l2Bottom-halfDist;
                 leftX=l1Left<l2Left?l1Left:l2Left;//l1Left+halfDist:l2Left+halfDist;
                 rightX=l1Right<l2Right?l1Right:l2Right;//l1Right-halfDist:l2Right-halfDist;
                 break;
-            case VERTICAL:
+            case VERTICAL_LINE:
                 leftX=rightX=l1Left>l2Left?l1Left-halfDist:l2Left-halfDist;
                 bottomY=l1Bottom<l2Bottom?l1Bottom:l2Bottom;//l1Bottom+halfDist:l2Bottom+halfDist;
                 topY=l1Top<l2Top?l1Top:l2Top;//l1Top-halfDist:l2Top-halfDist;
@@ -189,12 +187,15 @@ void LineAnalyzer::GetMiddlePath(const std::vector<GDSIILine> &v, std::vector<GD
 CodeType LineAnalyzer::GetCode(const GDSIILine &l1)
 {
     LineType lType = GetLineType(l1);
-    if(lType == VERTICAL)
+    if(lType == VERTICAL_LINE)
         return VERTIC_CODE;
-    else if(lType == HORIZONTAL)
+    else if(lType == HORIZONTAL_LINE)
         return HORIZO_CODE;
-    else
-        return ERROR_CODE;
+    else if(lType == DIAGONAL_ASC_LINE)
+        return ASC_CODE;
+    else if(lType == DIAGONAL_DESC_LINE)
+        return DESC_CODE;
+    else return ERROR_CODE;
 }
 CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
 {
@@ -204,7 +205,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
     LineType t2 = GetLineType(l2);
     if(t1 == t2)
         return ERROR_CODE;
-    else if(t1 == VERTICAL && t2 == HORIZONTAL)
+    else if(t1 == VERTICAL_LINE && t2 == HORIZONTAL_LINE)
     {
         int top1,bot1,left1,right1;
         int top2,bot2,left2,right2;
@@ -245,7 +246,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
         else
             return ERROR_CODE;
     }
-    else if(t1 == DIAGONAL_ASC && t2 == DIAGONAL_DESC)
+    else if(t1 == DIAGONAL_ASC_LINE && t2 == DIAGONAL_DESC_LINE)
     {
         int top1,bot1,left1,right1;
         int top2,bot2,left2,right2;
@@ -308,11 +309,12 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
         else
             return ERROR_CODE;
     }
-    else if(t1 == HORIZONTAL && t2 == VERTICAL ||
-            t1 == DIAGONAL_DESC && t2 == DIAGONAL_ASC)
+    else if((t1 == HORIZONTAL_LINE && t2 == VERTICAL_LINE) ||
+            (t1 == DIAGONAL_DESC_LINE) && (t2 == DIAGONAL_ASC_LINE))
     {
         return GetCode(l2,l1);
     }
+    return ERROR_CODE;
 }
 
 CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2, const GDSIILine &l3)
@@ -335,8 +337,10 @@ bool LineAnalyzer::IsPointOnLine(const GDSIIPoint &p, const GDSIILine &l)
 
 bool LineAnalyzer::GetCrossPoint(const GDSIILine &l1, const GDSIILine &l2, GDSIIPoint &cross)
 {
-    if(l1==l2)
+    if(l1==l2 || GetLineType(l1) == GetLineType(l2))
         return false;
+    LineType t1 = GetLineType(l1);
+    LineType t2 = GetLineType(l2);
     int x1 = l1.GetP1().GetX();
     int y1 = l1.GetP1().GetY();
     int x2 = l1.GetP2().GetX();
@@ -347,12 +351,50 @@ bool LineAnalyzer::GetCrossPoint(const GDSIILine &l1, const GDSIILine &l2, GDSII
     int x4 = l2.GetP2().GetX();
     int y4 = l2.GetP2().GetY();
 
-    int x = FunctionProvider::GetLineCrossX(x1,y1,x2,y2,x3,y3,x4,y4);
-    int y = FunctionProvider::GetLineCrossY(x3,y3,x4,y4,x);
+    if(x2 < x1)
+    {
+        std::swap(x1,x2);
+        std::swap(y1,y2);
+    }
+    if(x4 < x3)
+    {
+        std::swap(x3,x4);
+        std::swap(y3,y4);
+    }
+
+    int x;
+    int y;
+
+    if(t1 == VERTICAL_LINE)
+    {
+        double A2 = FunctionProvider::GetTan(x3,y3,x4,y4);
+        double b2 = y3 - A2*x3;
+        x = x1;
+        y = A2 * x + b2;
+    }
+    else if (t2 == VERTICAL_LINE)
+    {
+        double A1 = FunctionProvider::GetTan(x1,y1,x2,y2);
+        double b1 = y1 - A1*x1;
+        x = x3;
+        y = A1 * x + b1;
+    }
+    else
+    {
+        double A1 = FunctionProvider::GetTan(x1,y1,x2,y2);
+        double A2 = FunctionProvider::GetTan(x3,y3,x4,y4);
+        double b1 = y1 - A1*x1;
+        double b2 = y3 - A2*x3;
+        x = (b1-b2)/(A1-A2);
+        y = A1*x + b1;
+    }
+//пішла поп пизді логіка точки перетину двох ліній
+//    int x = FunctionProvider::GetLineCrossX(x1,y1,x2,y2,x3,y3,x4,y4);
+//    int y = FunctionProvider::GetLineCrossY(x1,y1,x2,y2,x3,y3,x4,y4);//x3,y3,x4,y4,x);
     cross.SetX(x);
     cross.SetY(y);
-    bool belongL1 = IsPointOnLine(GDSIIPoint(x,y),l1);
-    bool belongL2 = IsPointOnLine(GDSIIPoint(x,y),l2);
+    bool belongL1 = IsPointOnLine(cross,l1);
+    bool belongL2 = IsPointOnLine(cross,l2);
     return belongL1 && belongL2;//(((x1<=x) && (x2>=x) && (x3<=x) && (x4>=x)) || ((y1<=y) && (y2>=y) && (y3<=y) && (y4>=y)));
 }
 
@@ -432,4 +474,48 @@ void LineAnalyzer::SortLineContainer(GDSIILineContainer &container)
         return p1 != p2 ? CompareLines(p1,p2) :
                           CompareLines(pg1,pg2);
     });
+}
+
+bool LineAnalyzer::PointBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSIIPoint &p)
+{
+    bool isP1XInside = p.GetX() <= pix.GetXLimit() &&
+                       p.GetX() >= pix._initPoint.GetX();
+    bool isP1YInside = p.GetY() <= pix.GetYLimit() &&
+                       p.GetY() >= pix._initPoint.GetY();
+    return isP1XInside && isP1YInside;
+}
+
+bool LineAnalyzer::LineBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSIILine &l)
+{
+    bool isP1Inside = PointBelongToSuperPixel(pix,l.GetP1());
+    bool isP2Inside = PointBelongToSuperPixel(pix,l.GetP2());
+    if(isP1Inside || isP2Inside)
+    {
+        return true;
+    }
+    GDSIILine vMid = pix.GetVerticalMid();
+    GDSIILine hMid = pix.GetHorizontalMid();
+    GDSIIPoint cross;
+    bool isOk = false;
+    if(GetCrossPoint(l,vMid,cross))
+    {
+        isOk = PointBelongToSuperPixel(pix,cross);
+    }
+    if(!isOk)
+    {
+        if(GetCrossPoint(l,hMid,cross))
+        {
+            isOk = PointBelongToSuperPixel(pix,cross);
+        }
+    }
+    return isOk;
+//    for(int coord = l.GetP1().GetX(); l< l.GetP2(); l++)
+//    {
+//        int fCoord = FunctionProvider::GetLineEquationY(l.GetP1().GetX(),l.GetP1().GetY(),l.GetP2().GetX(),l.GetP2().GetY(),coord);
+//        if(PointBelongToSuperPixel(pix,GDSIIPoint(coord,fCoord)))
+//        {
+//            return true;
+//        }
+//    }
+
 }

@@ -157,8 +157,7 @@ void MapPrinter(const std::map<int,int>& map)
     }
 }
 
-
-int RunViewer(int argc, char *argv[])
+int RunMAIN(int argc, char *argv[])
 {
     QStringList paths = QCoreApplication::libraryPaths();
     paths.append(".");
@@ -169,10 +168,9 @@ int RunViewer(int argc, char *argv[])
     w.show();
     return a.exec();
 }
-int RunTest()
-{
-    GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
 
+int RunTEST1()
+{
     GDSIILine a(15,15,15,25);
     GDSIILine b(15,25,25,25);
     GDSIILine c(25,25,25,15);
@@ -196,6 +194,9 @@ int RunTest()
     std::cout<<"|-------------------TEST-------------------|"<<std::endl;
     GDSIIDesignEncoder::GetInstance().Encode(cont,10);
     std::cout<<"|-------------------||||-------------------|"<<std::endl;
+    std::cout<<"-----"<<std::endl;
+    GDSIIDesignEncoder::GetInstance().Encode(cont,10);
+    std::cout<<"-----"<<std::endl;
     return 0;
 }
 int main(int argc, char *argv[])
@@ -233,6 +234,16 @@ int main(int argc, char *argv[])
 //bool areCrossing = anal.GetCrossPoint(l1,l2,cross);
 //std::cout<<"Cross["<<(areCrossing? "true":"false")<<"]:["<<cross.GetX()<<","<<cross.GetY()<<"]"<<std::endl;
 
-//return RunViewer(argc,argv);
-return RunTest();
+//----------------------------------------CodePrinter(anal.GetCode(l1,l2));
+//GDSIILine ab(2,2,2,8);
+//GDSIILine bc(2,8,8,8);
+//GDSIILine ad(2,2,11,2);
+//GDSIILine ce(8,5,8,8);
+//GDSIILine ef(8,5,11,5);
+//GDSIILine fd(10,2,11,5);
+//GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
+
+
+//return RunTEST1();
+return RunMAIN(argc,argv);
 }

@@ -8,6 +8,7 @@
 #include "inc/LithographyTools/LineAnalyzer.h"
 #include "inc/GUI/GDSIILineContainer.h"
 
+#include <iostream>
 #define ENCODE_TWO_IN_INT32(left,right)  ((left<<16)|(right&65535))
 #define ENCODE_LEFT_IN_INT32(base,value) ((base&65535)|(value<<16))
 #define ENCODE_RIGHT_IN_INT32(base,value)((base&4294901760)|(value))
@@ -31,6 +32,14 @@ struct GDSIISuperPixel
     int GetYLimit() const
     {
         return _initPoint.GetY()+_size;
+    }
+    GDSIILine GetVerticalMid() const
+    {
+        return GDSIILine(_initPoint.GetX()+_size/2,_initPoint.GetY(),_initPoint.GetX()+_size/2,_initPoint.GetY()+_size);
+    }
+    GDSIILine GetHorizontalMid() const
+    {
+        return GDSIILine(_initPoint.GetX(),_initPoint.GetY()+_size/2,_initPoint.GetX()+_size,_initPoint.GetY()+_size/2);
     }
 };
 
@@ -84,7 +93,8 @@ class GDSIIDesignEncoder
 
     LineAnalyzer _lineAnalizer;
 
-    std::map<int,GDSIILineRefenceSet> _map;
+    std::map<int,GDSIILineRefenceSet> _xCoordMap;
+    std::map<int,GDSIILineRefenceSet> _yCoordMap;
 
     int bottomX;
     int bottomY;
@@ -94,7 +104,7 @@ class GDSIIDesignEncoder
     inline int GetEncodingAreaWidth() { return topX - bottomX;}
     inline int GetEncodingAreaHeight(){ return topY - bottomY;}
     void ConstructReferencedMap(GDSIILineContainer& container);
-    void GetLinesInSuperPixel(const GDSIISuperPixel& pix, std::vector<GDSIILine*> &vect);
+    void ExtractLinesForSuperPixel(const GDSIISuperPixel& pix, std::set<GDSIILine *> &vect);
 
     void PrintReferencedMap() const;
     void PrepareData(GDSIILineContainer& container);
