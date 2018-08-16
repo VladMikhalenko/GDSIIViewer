@@ -1,5 +1,5 @@
 #include "inc/MathTools/FunctionProvider.h"
-
+#include <cmath>
 FunctionProvider::FunctionProvider()
 {
 
@@ -34,5 +34,5 @@ int FunctionProvider::GetLineCrossY(int x3,int y3, int x4, int y4, int x_value)
 }
 double FunctionProvider::GetTan(int x1, int y1, int x2, int y2)
 {
-    return static_cast<double>((y1-y2))/(x1-x2);
+    return std::fabs(static_cast<double>((y1-y2))/(x1-x2));
 }

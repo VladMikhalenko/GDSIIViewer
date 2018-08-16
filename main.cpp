@@ -195,6 +195,15 @@ int RunTEST1()
     std::cout<<"-----"<<std::endl;
     return 0;
 }
+int RunDiag2()
+{
+    GDSIILine a(0,0,60,60);
+    GDSIILineContainer cont;
+    cont.AddLine(a);
+    GDSIIDesignEncoder::GetInstance().Encode(cont,10);
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
 //    kernel_type kernel=GaussianKernel::CalculateGaussian2DKernel(100);
@@ -241,5 +250,6 @@ int main(int argc, char *argv[])
 
 
 //return RunTEST1();
-return RunMAIN(argc,argv);
+//return RunMAIN(argc,argv);
+return RunDiag2();
 }

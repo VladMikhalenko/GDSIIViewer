@@ -121,6 +121,12 @@ void LineAnalyzer::ParseLine(const GDSIILine &line,int &left, int &right, int &b
             top=y1>y2?y1:y2;
             left=right=x1;
             break;
+        case DIAGONAL_ASC_LINE:
+        case DIAGONAL_DESC_LINE:
+            left=x1<x2?x1:x2;
+            right=x1>x2?x1:x2;
+            bottom=y1<y2?y1:y2;
+            top=y1>y2?y1:y2;
         default:
             break;
     }
@@ -261,7 +267,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
             int cy = cross.GetY();
             if(cy == top1 && cy == top2)
             {
-                if(cx > left1 && cx < right2)
+                if(cx >= left1 && cx <= right2)//(cx > left1 && cx < right2)
                 {
                     return ASC_DESC_U;
                 }
@@ -272,7 +278,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
             }
             else if(cy == bot1 && cy == bot2)
             {
-                if(cx > left1 && cx < right2)
+                if(cx >= left1 && cx <= right2)//(cx > left1 && cx < right2)
                 {
                     return ASC_DESC_D;
                 }
@@ -283,7 +289,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
             }
             else if(cx == left1 && cx == left2)
             {
-                if(cx < top1 && cx > bot2)
+                if(cx <= top1 && cx >= bot2)//(cx < top1 && cx > bot2)
                 {
                     return ASC_DESC_L;
                 }
@@ -294,7 +300,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
             }
             else if(cx == right1 && cx ==right2)
             {
-                if(cx < top1 && cx > bot2)
+                if(cx <= top1 && cx >= bot2)//(cx < top1 && cx > bot2)
                 {
                     return ASC_DESC_R;
                 }
@@ -321,6 +327,7 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2, const G
 {
 
 }
+//закончил на том, что подправил условие кодировани для крайних линий, но пока что не работает
 
 bool LineAnalyzer::IsPointOnLine(const GDSIIPoint &p, const GDSIILine &l)
 {
@@ -351,21 +358,22 @@ bool LineAnalyzer::GetCrossPoint(const GDSIILine &l1, const GDSIILine &l2, GDSII
     int x4 = l2.GetP2().GetX();
     int y4 = l2.GetP2().GetY();
 
-    if(x2 < x1)
-    {
-        std::swap(x1,x2);
-        std::swap(y1,y2);
-    }
-    if(x4 < x3)
-    {
-        std::swap(x3,x4);
-        std::swap(y3,y4);
-    }
-
     int x;
     int y;
 
-    if(t1 == VERTICAL_LINE)
+    if(((x1 == x3) || (x1 == x4)) &&
+       ((y1 == y3) || (y1 == y4)))
+    {
+        x = x1;
+        y = y1;
+    }
+    else if(((x2 == x3) || (x2 == x4)) &&
+            ((y2 == y3) || (y2 == y4)))
+    {
+        x = x2;
+        y = y2;
+    }
+    else if(t1 == VERTICAL_LINE)
     {
         double A2 = FunctionProvider::GetTan(x3,y3,x4,y4);
         double b2 = y3 - A2*x3;
@@ -388,9 +396,6 @@ bool LineAnalyzer::GetCrossPoint(const GDSIILine &l1, const GDSIILine &l2, GDSII
         x = (b1-b2)/(A1-A2);
         y = A1*x + b1;
     }
-//пішла поп пизді логіка точки перетину двох ліній
-//    int x = FunctionProvider::GetLineCrossX(x1,y1,x2,y2,x3,y3,x4,y4);
-//    int y = FunctionProvider::GetLineCrossY(x1,y1,x2,y2,x3,y3,x4,y4);//x3,y3,x4,y4,x);
     cross.SetX(x);
     cross.SetY(y);
     bool belongL1 = IsPointOnLine(cross,l1);
