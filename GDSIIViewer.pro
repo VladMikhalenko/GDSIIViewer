@@ -118,7 +118,9 @@ SOURCES += \
     src/MathTools/FunctionProvider.cpp \
     utils/Convert/GDSIIConverter.cpp \
     utils/Encoder/GDSIIDesignEncoder.cpp \
-    utils/Encoder/GDSIIEncoder.cpp
+    utils/Encoder/GDSIIEncoder.cpp \
+    utils/FileWriter/FileWriter.cpp \
+    utils/GDSIIPainter/GDSIIImageBuilder.cpp
 
 HEADERS += \
     HotSpotScaner.h \
@@ -218,7 +220,9 @@ HEADERS += \
     src/Point.h \
     utils/Convert/GDSIIConverter.h \
     utils/Encoder/GDSIIDesignEncoder.h \
-    utils/Encoder/GDSIIEncoder.h
+    utils/Encoder/GDSIIEncoder.h \
+    utils/FileWriter/FileWriter.h \
+    utils/GDSIIPainter/GDSIIImageBuilder.h
 
 FORMS += \
     mainwindow.ui \

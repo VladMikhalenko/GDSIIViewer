@@ -194,9 +194,6 @@ int RunTEST1()
     std::cout<<"|-------------------TEST-------------------|"<<std::endl;
     GDSIIDesignEncoder::GetInstance().Encode(cont,10);
     std::cout<<"|-------------------||||-------------------|"<<std::endl;
-    std::cout<<"-----"<<std::endl;
-    GDSIIDesignEncoder::GetInstance().Encode(cont,10);
-    std::cout<<"-----"<<std::endl;
     return 0;
 }
 int main(int argc, char *argv[])
@@ -243,7 +240,6 @@ int main(int argc, char *argv[])
 //GDSIILine fd(10,2,11,5);
 //GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
 
-
-//return RunTEST1();
-return RunMAIN(argc,argv);
+return RunTEST1();
+//return RunMAIN(argc,argv);
 }

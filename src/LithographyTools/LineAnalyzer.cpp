@@ -388,7 +388,6 @@ bool LineAnalyzer::GetCrossPoint(const GDSIILine &l1, const GDSIILine &l2, GDSII
         x = (b1-b2)/(A1-A2);
         y = A1*x + b1;
     }
-//пішла поп пизді логіка точки перетину двох ліній
 //    int x = FunctionProvider::GetLineCrossX(x1,y1,x2,y2,x3,y3,x4,y4);
 //    int y = FunctionProvider::GetLineCrossY(x1,y1,x2,y2,x3,y3,x4,y4);//x3,y3,x4,y4,x);
     cross.SetX(x);
