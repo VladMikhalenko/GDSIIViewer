@@ -8,7 +8,29 @@ HotSpotScaner::HotSpotScaner(std::shared_ptr<GDSIIDesign> gdsii_design)
 {
     design=gdsii_design;
 }
+std::vector<GDSIILineContainer> HotSpotScaner::ExtractAllMarkedAreas(int data_layer, int marker_layer)
+{
+    std::vector<GDSIILineContainer> areas;
+    LayerForView data=*design->GetLayerForView(data_layer);
+    LayerForView marker=*design->GetLayerForView(marker_layer);
+    GDSIIPoint leftBot(INT32_MAX,INT32_MAX);
+    GDSIIPoint rightTop(INT32_MIN,INT32_MIN);
+    GDSIIPoint leftTop, rightBot;
+    result.reserve(marker.GetBoundaryAmount());
+    for(int b_index = 0; b_index <marker.GetBoundaryAmount();b_index++)
+    {
+        leftBot.SetX(INT32_MAX);
+        leftBot.SetY(INT32_MAX);
+        rightTop.SetX(INT32_MIN);
+        rightTop.SetY(INT32_MIN);
 
+        Boundary b_i=marker.GetBoundaries()[i];
+        CalculateBordersOfMarker(std::dynamic_pointer_cast<GDSIIElement,Boundary>(std::make_shared<Boundary>(b_i)),leftBot,leftTop,rightBot,rightTop);
+        std::shared_ptr<GDSIILineContainer> extracted= data.GetLineContainerForArea(leftBot.GetX(),leftBot.GetY(),rightTop.GetX(),rightTop.GetY());
+        areas.push_back(extracted);
+    }
+    return areas;
+}
 std::shared_ptr<GDSIILineContainer> HotSpotScaner::ScannLayer(int data_layer, int marker_layer)
 {
     LayerForView data=*design->GetLayerForView(data_layer);

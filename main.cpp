@@ -168,6 +168,7 @@ int RunMAIN(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+
 int RunTEST1()
 {
     GDSIILine a(15,15,15,25);
@@ -190,9 +191,9 @@ int RunTEST1()
     cont.AddLine(g);
     cont.AddLine(h);
     ContainerPrinter(cont);
-    std::cout<<"-----"<<std::endl;
+    std::cout<<"|-------------------TEST-------------------|"<<std::endl;
     GDSIIDesignEncoder::GetInstance().Encode(cont,10);
-    std::cout<<"-----"<<std::endl;
+    std::cout<<"|-------------------||||-------------------|"<<std::endl;
     return 0;
 }
 int RunDiag2()
@@ -247,9 +248,9 @@ int main(int argc, char *argv[])
 //GDSIILine ef(8,5,11,5);
 //GDSIILine fd(10,2,11,5);
 //GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
-
-
 //return RunTEST1();
 //return RunMAIN(argc,argv);
 return RunDiag2();
+//return RunTEST1();
+//return RunMAIN(argc,argv);
 }
