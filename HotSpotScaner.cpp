@@ -1,6 +1,9 @@
 #include "HotSpotScaner.h"
 #include "inc/LithographyTools/LithographicRay.h"
 #include "inc/MathTools/FunctionProvider.h"
+#include "inc/LithographyTools/GaussianProcessor.h"
+
+#include "utils/GDSIIPainter/GDSIIImageBuilder.h"
 #include "utils/Convert/GDSIIConverter.h"
 #include <iostream>
 
@@ -8,15 +11,65 @@ HotSpotScaner::HotSpotScaner(std::shared_ptr<GDSIIDesign> gdsii_design)
 {
     design=gdsii_design;
 }
-std::vector<GDSIILineContainer> HotSpotScaner::ExtractAllMarkedAreas(int data_layer, int marker_layer)
+void HotSpotScaner::ExtractAllMarkedAreasAsJPG(int data_layer, int marker_layer)
 {
-    std::vector<GDSIILineContainer> areas;
-    LayerForView data=*design->GetLayerForView(data_layer);
-    LayerForView marker=*design->GetLayerForView(marker_layer);
+    LayerForView data   = *design->GetLayerForView(data_layer);
+    LayerForView marker = *design->GetLayerForView(marker_layer);
     GDSIIPoint leftBot(INT32_MAX,INT32_MAX);
     GDSIIPoint rightTop(INT32_MIN,INT32_MIN);
     GDSIIPoint leftTop, rightBot;
-    result.reserve(marker.GetBoundaryAmount());
+    QImage image;
+    for(int b_index = 0; b_index <marker.GetBoundaryAmount();b_index++)
+    {
+        image.fill(Qt::white);
+        leftBot.SetX(INT32_MAX);
+        leftBot.SetY(INT32_MAX);
+        rightTop.SetX(INT32_MIN);
+        rightTop.SetY(INT32_MIN);
+
+        Boundary b_i=marker.GetBoundaries()[b_index];
+        CalculateBordersOfMarker(std::dynamic_pointer_cast<GDSIIElement,Boundary>(std::make_shared<Boundary>(b_i)),leftBot,leftTop,rightBot,rightTop);
+        GDSIILineContainer extracted = *data.GetLineContainerForArea(leftBot.GetX(),leftBot.GetY(),rightTop.GetX(),rightTop.GetY());
+        GDSIIImageBuilder::DrawLineContainerOnImage(image, extracted);
+        image.save(QString::fromStdString(std::string("[HotSpot_"+std::to_string(static_cast<long long>(b_index))+"].jpg")),"JPG");
+    }
+}
+void HotSpotScaner::ExtractMarkedAreasWithGaussAsJPG(int data_layer, int marker_layer)
+{
+    GaussianProcessor gProc(1199,1.0,60,20);
+    LayerForView data   =*design->GetLayerForView(data_layer);
+    LayerForView marker =*design->GetLayerForView(marker_layer);
+    QImage image;
+    GDSIIPoint leftBot(INT32_MAX,INT32_MAX);
+    GDSIIPoint rightTop(INT32_MIN,INT32_MIN);
+    GDSIIPoint leftTop, rightBot;
+    int boundsNum = marker.GetBoundaryAmount();
+    for(int b_index = 0; b_index < boundsNum;b_index++)
+    {
+        leftBot.SetX(INT32_MAX);
+        leftBot.SetY(INT32_MAX);
+        rightTop.SetX(INT32_MIN);
+        rightTop.SetY(INT32_MIN);
+
+        Boundary b_i=marker.GetBoundaries()[b_index];
+        CalculateBordersOfMarker(std::dynamic_pointer_cast<GDSIIElement,Boundary>(std::make_shared<Boundary>(b_i)),leftBot,leftTop,rightBot,rightTop);
+        GDSIILineContainer extracted = *data.GetLineContainerForArea(leftBot.GetX(),leftBot.GetY(),rightTop.GetX(),rightTop.GetY());
+        IntensityField field(1,1);
+        gProc.ProcessLineContainer(field, extracted);
+        image = GDSIIConverter::GetInstance().Convert(field);
+        GDSIIImageBuilder::DrawLineContainerOnImage(image,extracted);
+        image.save(QString::fromStdString(std::string("[Field]"+std::to_string(static_cast<long long>(b_index))+".jpg")),"JPG");
+    }
+}
+std::vector<GDSIILineContainer> HotSpotScaner::ExtractAllMarkedAreas(int data_layer, int marker_layer)
+{
+    std::vector<GDSIILineContainer> areas;
+    LayerForView data   = *design->GetLayerForView(data_layer);
+    LayerForView marker = *design->GetLayerForView(marker_layer);
+    GDSIIPoint leftBot(INT32_MAX,INT32_MAX);
+    GDSIIPoint rightTop(INT32_MIN,INT32_MIN);
+    GDSIIPoint leftTop, rightBot;
+    areas.reserve(static_cast<size_t>(marker.GetBoundaryAmount()));
     for(int b_index = 0; b_index <marker.GetBoundaryAmount();b_index++)
     {
         leftBot.SetX(INT32_MAX);
@@ -24,9 +77,9 @@ std::vector<GDSIILineContainer> HotSpotScaner::ExtractAllMarkedAreas(int data_la
         rightTop.SetX(INT32_MIN);
         rightTop.SetY(INT32_MIN);
 
-        Boundary b_i=marker.GetBoundaries()[i];
+        Boundary b_i=marker.GetBoundaries()[b_index];
         CalculateBordersOfMarker(std::dynamic_pointer_cast<GDSIIElement,Boundary>(std::make_shared<Boundary>(b_i)),leftBot,leftTop,rightBot,rightTop);
-        std::shared_ptr<GDSIILineContainer> extracted= data.GetLineContainerForArea(leftBot.GetX(),leftBot.GetY(),rightTop.GetX(),rightTop.GetY());
+        GDSIILineContainer extracted = *data.GetLineContainerForArea(leftBot.GetX(),leftBot.GetY(),rightTop.GetX(),rightTop.GetY());
         areas.push_back(extracted);
     }
     return areas;
@@ -52,7 +105,7 @@ std::shared_ptr<GDSIILineContainer> HotSpotScaner::ScannLayer(int data_layer, in
     int kernel_size=1199;
     double sigma=60;
     double alpha=1.0;
-    kernel_type kernel=GaussianKernel::CalculateGaussian2DKernel(radius,kernel_size,sigma,alpha);
+    kernel_type kernel=GaussianKernel::CalculateGaussian2DKernel(kernel_size,sigma,alpha);
 
     for(int i=0;i<marker.GetBoundaryAmount();i++)
     {
@@ -120,47 +173,65 @@ std::shared_ptr<GDSIILineContainer> HotSpotScaner::ScannLayer(int data_layer, in
         //}
         //image->save("HotSpot_"+QString::number(i)+".jpg","JPG");        
         //ShootBlackRay(*image,QPoint(radius,radius),kernel);
-        image=GDSIIConverter::GetInstance().Convert(field);
-        for(int j=0;j<result->GetAmount();j++)
-        {
-            GDSIILine l_j=result->GetArray()[j];
+//ZAKOMENCHENO------------------------------------------------------------------------------------------V
+//        image=GDSIIConverter::GetInstance().Convert(field);
+//        for(int j=0;j<result->GetAmount();j++)
+//        {
+//            GDSIILine l_j=result->GetArray()[j];
 
-            int bottomX=leftBot.GetX();//result->GetBottomX();
-            int bottomY=leftBot.GetY();//result->GetBottomY();
+//            int bottomX=leftBot.GetX();//result->GetBottomX();
+//            int bottomY=leftBot.GetY();//result->GetBottomY();
 
-            int new_x1=l_j.GetP1().GetX()-bottomX;
-            int new_y1=area_height-(l_j.GetP1().GetY()-bottomY);
-            int new_x2=l_j.GetP2().GetX()-bottomX;
-            int new_y2=area_height-(l_j.GetP2().GetY()-bottomY);
+//            int new_x1=l_j.GetP1().GetX()-bottomX;
+//            int new_y1=area_height-(l_j.GetP1().GetY()-bottomY);
+//            int new_x2=l_j.GetP2().GetX()-bottomX;
+//            int new_y2=area_height-(l_j.GetP2().GetY()-bottomY);
 
 
-            QLine new_l_j(new_x1,new_y1,new_x2,new_y2);
-            paint->begin(image.get());
-            paint->drawLine(new_l_j);
-            paint->end();
-        }
-        image->save("SH_HS_"+QString::number(i)+".jpg","JPG");
-        image.reset();
+//            QLine new_l_j(new_x1,new_y1,new_x2,new_y2);
+//            paint->begin(image.get());
+//            paint->drawLine(new_l_j);
+//            paint->end();
+//        }
+//        image->save("SH_HS_"+QString::number(i)+".jpg","JPG");
+//        image.reset();
     }
     return nullptr;//костыль!!!!!!!
 }
+void HotSpotScaner::PerformScanning(int data_layer, int marker_layer)
+{
+    //UNNECCESSARY
+    auto markedAreas = ExtractAllMarkedAreas(data_layer,marker_layer);
+    GaussianProcessor gProc(1199,1.0,60,20);
+    static size_t count = markedAreas.size();
+    for(auto it = markedAreas.begin(); it!=markedAreas.end();it++)
+    {
+        IntensityField field(1,1);
+        gProc.ProcessLineContainer(field, *it);
+        QImage img = GDSIIConverter::GetInstance().Convert(field);
+        //QImage(*.get()).save("TestImg_"+QString::number(it-markedAreas.begin())+".jpg","JPG");
+        GDSIIImageBuilder imb;
+        //QImage img;
+        //imb.DrawLineContainerOnImage(img,QString("DrawTestImg").toStdString()+QString::number(it-markedAreas.begin()).toStdString(),*it);
+        printf("Scanned areas: %d",count--);
+    }
 
+}
 void HotSpotScaner::CalculateBordersOfMarker(const std::shared_ptr<GDSIIElement> &el, GDSIIPoint &leftBottom, GDSIIPoint &leftTop, GDSIIPoint &rightBottom, GDSIIPoint &rightTop)
 {
-    for(int i=0;i<el->GetAmountOfPoints();i++)
+    for(size_t i=0;i<static_cast<size_t>(el->GetAmountOfPoints());i++)
     {
-        GDSIIPoint p_i=el->GetPoints()[i];
+        GDSIIPoint p_i=el->GetPointAt(i);
         leftBottom=(p_i.GetX()<leftBottom.GetX() && p_i.GetY()<leftBottom.GetY())?p_i:leftBottom;
-        rightTop=(p_i.GetX()>rightTop.GetX() && p_i.GetY()>rightTop.GetY())?p_i:rightTop;
+        rightTop  =(p_i.GetX()>rightTop.GetX()   && p_i.GetY()>rightTop.GetY())  ?p_i:rightTop;
     }
     rightBottom.SetX(rightTop.GetX());
     rightBottom.SetY(leftBottom.GetY());
 
     leftTop.SetX(leftBottom.GetX());
     leftTop.SetY(rightTop.GetY());
+
 }
-
-
 
 //void HotSpotScaner::ShootColorRay(QImage &img,QPoint point,kernel_type kernel)
 //{

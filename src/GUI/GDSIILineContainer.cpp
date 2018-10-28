@@ -20,10 +20,6 @@ int GDSIILineContainer::GetAmount()
 void GDSIILineContainer::AddLine(GDSIILine line)
 {
     lineArray.push_back(line);
-//    SetBottomX(line.GetP1().GetX()<bottomX?line.GetP1().GetX():bottomX);
-//    SetBottomY(line.GetP1().GetY()<bottomY?line.GetP1().GetY():bottomY);
-//    SetBottomX(line.GetP2().GetX()<bottomX?line.GetP2().GetX():bottomX);
-//    SetBottomY(line.GetP2().GetY()<bottomY?line.GetP2().GetY():bottomY);
 }
 
 void GDSIILineContainer::SetAreaWidth(int width)
@@ -41,20 +37,20 @@ void GDSIILineContainer::SetBottomX(int x_value)
 void GDSIILineContainer::SetBottomY(int y_value){
     bottomY=y_value;
 }
-int GDSIILineContainer::GetBottomX()
+int GDSIILineContainer::GetBottomX() const
 {
     return bottomX;
 }
-int GDSIILineContainer::GetBottomY()
+int GDSIILineContainer::GetBottomY() const
 {
     return bottomY;
 }
 
-int GDSIILineContainer::GetAreaWidth()
+int GDSIILineContainer::GetAreaWidth() const
 {
     return areaWidth;
 }
-int GDSIILineContainer::GetAreaHeight()
+int GDSIILineContainer::GetAreaHeight() const
 {
     return areaHeight;
 }
@@ -72,4 +68,14 @@ void GDSIILineContainer::PerformShift()
             item->SetP2(item->GetP2()+p);
         }
     }
+}
+
+constLineContainerIt GDSIILineContainer::Begin() const
+{
+    return lineArray.begin();
+}
+
+constLineContainerIt GDSIILineContainer::End() const
+{
+    return lineArray.end();
 }

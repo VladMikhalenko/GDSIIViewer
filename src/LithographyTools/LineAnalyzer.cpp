@@ -315,19 +315,69 @@ CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2)
         else
             return ERROR_CODE;
     }
-    else if((t1 == HORIZONTAL_LINE && t2 == VERTICAL_LINE) ||
-            (t1 == DIAGONAL_DESC_LINE) && (t2 == DIAGONAL_ASC_LINE))
+    else if(
+           ((t1 == HORIZONTAL_LINE) && (t2 == VERTICAL_LINE)) ||
+           ((t1 == DIAGONAL_DESC_LINE) && (t2 == DIAGONAL_ASC_LINE)))
     {
         return GetCode(l2,l1);
     }
     return ERROR_CODE;
 }
-
 CodeType LineAnalyzer::GetCode(const GDSIILine &l1, const GDSIILine &l2, const GDSIILine &l3)
 {
-
+    if((l1 == l2) || (l1 == l3) || (l2 == l3))
+        return ERROR_CODE;
+    LineType t1 = GetLineType(l1);
+    LineType t2 = GetLineType(l2);
+    LineType t3 = GetLineType(l3);
+    if((t1 == t2) && (t2 == t3))
+        return ERROR_CODE;
+    else if((t1 == HORIZONTAL_LINE) &&
+            (t2 == VERTICAL_LINE)   &&
+            (t3 == HORIZONTAL_LINE))
+    {
+        CodeType firstPairCode = GetCode(l1,l2);
+        CodeType secondPairCode = GetCode(l2,l3);
+        if(((firstPairCode == R_UP_CORNER) && (secondPairCode == L_LW_CORNER)) ||
+           ((firstPairCode == L_LW_CORNER) && (secondPairCode == R_UP_CORNER)))
+        {
+            return Z_DEFAULT;
+        }
+        else if(((firstPairCode == R_LW_CORNER) && (secondPairCode == L_UP_CORNER)) ||
+                ((firstPairCode == L_UP_CORNER) && (secondPairCode == R_LW_CORNER)))
+        {
+            return S_DEFAULT;
+        }
+    }
+    else if((t1 == VERTICAL_LINE)   &&
+            (t2 == HORIZONTAL_LINE) &&
+            (t3 == VERTICAL_LINE))
+    {
+        CodeType firstPairCode = GetCode(l1,l2);
+        CodeType secondPairCode = GetCode(l2,l3);
+        if(((firstPairCode == L_UP_CORNER) && (secondPairCode == R_LW_CORNER)) ||
+           ((firstPairCode == R_LW_CORNER) && (secondPairCode == L_UP_CORNER)))
+        {
+            return Z_ROTATED;
+        }
+        else if(((firstPairCode == L_LW_CORNER) && (secondPairCode == R_UP_CORNER)) ||
+                ((firstPairCode == R_UP_CORNER) && (secondPairCode == L_LW_CORNER)))
+        {
+            return S_ROTATED;
+        }
+    }
+    else if(((t1 == VERTICAL_LINE) && (t2 == HORIZONTAL_LINE) && (t3 == HORIZONTAL_LINE)) ||
+            ((t1 == HORIZONTAL_LINE) && (t2 == VERTICAL_LINE) && (t3 == VERTICAL_LINE)))
+    {
+        return GetCode(l2,l1,l3);
+    }
+    else if(((t1 == HORIZONTAL_LINE) && (t2 == HORIZONTAL_LINE) && (t3 == VERTICAL_LINE)) ||
+            ((t1 == VERTICAL_LINE) && (t2 == VERTICAL_LINE) && (t3 == HORIZONTAL_LINE)))
+    {
+        return GetCode(l1,l3,l2);
+    }
+    return ERROR_CODE;
 }
-//закончил на том, что подправил условие кодировани для крайних линий, но пока что не работает
 
 bool LineAnalyzer::IsPointOnLine(const GDSIIPoint &p, const GDSIILine &l)
 {
@@ -396,11 +446,6 @@ bool LineAnalyzer::GetCrossPoint(const GDSIILine &l1, const GDSIILine &l2, GDSII
         x = (b1-b2)/(A1-A2);
         y = A1*x + b1;
     }
-<<<<<<< HEAD
-=======
-//    int x = FunctionProvider::GetLineCrossX(x1,y1,x2,y2,x3,y3,x4,y4);
-//    int y = FunctionProvider::GetLineCrossY(x1,y1,x2,y2,x3,y3,x4,y4);//x3,y3,x4,y4,x);
->>>>>>> 00d47284b1d2978de5bd95faec62127aee5b5da1
     cross.SetX(x);
     cross.SetY(y);
     bool belongL1 = IsPointOnLine(cross,l1);
@@ -528,4 +573,12 @@ bool LineAnalyzer::LineBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSI
 //        }
 //    }
 
+}
+
+bool LineAnalyzer::CheckPointBelongToArea(GDSIIPoint p, int x_min, int y_min, int x_max, int y_max)
+{
+    return p.GetX()>=x_min &&
+           p.GetY()>=y_min &&
+           p.GetX()<=x_max &&
+           p.GetY()<=y_max;
 }

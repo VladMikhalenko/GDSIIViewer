@@ -12,6 +12,9 @@ class HotSpotScaner
 public:
     HotSpotScaner(std::shared_ptr<GDSIIDesign> gdsii_design);
     std::shared_ptr<GDSIILineContainer> ScannLayer(int data_layer, int marker_layer);
+    void PerformScanning(int data_layer, int marker_layer);
+    void ExtractAllMarkedAreasAsJPG(int data_layer, int marker_layer);
+    void ExtractMarkedAreasWithGaussAsJPG(int data_layer, int marker_layer);
     std::vector<GDSIILineContainer> ExtractAllMarkedAreas(int data_layer, int marker_layer);
     //void ShootColorRay(QImage &img,QPoint point, kernel_type kernel);
     //void ShootBlackRay(QImage &img,QPoint point, kernel_type kernel);

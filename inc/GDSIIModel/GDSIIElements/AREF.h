@@ -8,9 +8,6 @@ class AREF:public GDSIIElement
     std::string SNAME;
     std::shared_ptr<GDSIIStructure> _structure;
 
-    //Point* points;
-    std::vector<GDSIIPoint> points;
-
     short COL;
     short ROW;
 
@@ -23,8 +20,7 @@ class AREF:public GDSIIElement
 public:
     AREF();
     ~AREF();
-    std::vector<GDSIIPoint> GetPoints();
-    void SetPoints(const std::vector<GDSIIPoint> &points, int amount);
+    void SetPoints(const std::vector<GDSIIPoint> &source, int amount);
 
     void SetCOL(short col);
     void SetROW(short row);

@@ -98,17 +98,14 @@ bool Path::HasWidth(){
     return widthFlag;
 }
 
-std::vector<GDSIIPoint> Path::GetPoints()
-{
-    return points;
-}
-void Path::SetPoints(const std::vector<GDSIIPoint> &pArray,int amount){
+void Path::SetPoints(const std::vector<GDSIIPoint> &source,int amount){
     if(amount>0 && amount<=200)
     {
         amountOfPoints=amount;
-        this->points.clear();
+        points.clear();
+        points.reserve(amount);
         for(int i=0;i<amount;i++)
-            points.push_back(pArray[i]);
+            points.push_back(source[i]);
        // if(amountOfPoints>1)
        //     delete [] points;
        // else if(amountOfPoints==1) delete points;

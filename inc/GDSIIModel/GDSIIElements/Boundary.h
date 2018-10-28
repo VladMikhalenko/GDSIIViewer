@@ -6,8 +6,6 @@
 class Boundary:public GDSIIElement
 {
     short DATATYPE;
-    //Point* points;
-    std::vector<GDSIIPoint> points;
 public:
     Boundary();
     ~Boundary();
@@ -15,8 +13,7 @@ public:
     void SetDataType(short data_t);
     short GetDataType();
 
-    std::vector<GDSIIPoint> GetPoints();
-    void SetPoints(const std::vector<GDSIIPoint> &points, int amount);
+    void SetPoints(const std::vector<GDSIIPoint> &source, int amount);
 
 };
 

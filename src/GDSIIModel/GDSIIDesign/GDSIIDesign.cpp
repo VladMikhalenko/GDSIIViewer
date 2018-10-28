@@ -164,7 +164,7 @@ void GDSIIDesign::RecountCoordsForElement(const std::shared_ptr<GDSIIElement> &e
     double radAngle=angle*M_PI/180;
     for(int i=0;i<copy->GetAmountOfPoints();i++)
     {
-        GDSIIPoint point_i=copy->GetPoints()[i];
+        GDSIIPoint point_i=copy->GetPointAt(i);
 
         QTransform moveToRef(1,0,refPoint.GetX(),0,1,refPoint.GetY(),0,0,1);
         QTransform rotMat(cos(radAngle),-sin(radAngle),0,sin(radAngle),cos(radAngle),0,0,0,1);

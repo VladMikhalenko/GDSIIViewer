@@ -30,6 +30,12 @@ void GDSIILine::SetP2(GDSIIPoint p)
     _p2=p;
 }
 
+void GDSIILine::SetPoints(GDSIIPoint p1, GDSIIPoint p2)
+{
+    _p1 = p1;
+    _p2 = p2;
+}
+
 bool GDSIILine::operator ==(const GDSIILine &l) const
 {
     return (GetP1()==l.GetP1()) && (GetP2()==l.GetP2());

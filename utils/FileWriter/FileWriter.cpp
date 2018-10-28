@@ -1,6 +1,7 @@
 #include "FileWriter.h"
-
-FileWriter::FileWriter()
+#include <iostream>
+FileWriter::FileWriter():
+    _file()
 {
 
 }
@@ -12,15 +13,18 @@ FileWriter::~FileWriter()
 
 void FileWriter::WriteStringToFile(const std::string &filePath, const std::string &data)
 {
-    std::fstream writer;
-    writer.open(filePath,std::ios_base::out);
-    if(writer.is_open())
+    if(_file.is_open())
     {
-        writer.write(data.c_str(),data.size());
+        _file.close();
+    }
+    _file.open(filePath,std::ios_base::binary|std::ios_base::out);
+    if(_file.is_open())
+    {
+        _file.write(data.c_str(),data.size());
+        _file.close();
     }
     else
     {
-        std::cout<<"FileWriter::WriteStringToFile() -> Failed to open/create file "<<filePath<<std::endl;
+        std::cout<<"FileWriter::WriteStringToFile()->Error occurred!"<<std::endl;
     }
-    writer.close();
 }

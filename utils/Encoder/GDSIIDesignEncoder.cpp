@@ -17,23 +17,26 @@ void GDSIIDesignEncoder::PrepareData(GDSIILineContainer &container)
     //PrintMap();
     //_lineAnalizer.SortLineContainer(container);
     ConstructReferencedMap(container);
-    PrintReferencedMap();
     //PrintReferencedMap();
 }
 
-void GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int pixelSize)
+std::string GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int pixelSize)
 {
     std::vector<CodeType> codes;
     std::set<GDSIILine*> lines;
     PrepareData(const_cast<GDSIILineContainer&>(container));
     GDSIISuperPixel pixel(GDSIIPoint(bottomX,bottomY),pixelSize);
-    int encW = GetEncodingAreaWidth();
-    int encH = GetEncodingAreaHeight();
-
+    int encW = container.GetAreaWidth();
+    int encH = container.GetAreaHeight();
+    //it is possible to make encoded area shorter
+    bottomX = container.GetBottomX();
+    bottomY = container.GetBottomY();
+    topX    = bottomX + encW;
+    topY    = bottomY + encH;
     if(pixel.GetSize() > encH || pixel.GetSize() > encW)
     {
         std::cout<<"Encoding failed: pixel does not fit container\n";
-        return;
+        return "";
     }
     unsigned step = pixel._size;
     codes.reserve((encW/step)*(encH/step));
@@ -41,10 +44,6 @@ void GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int pixelSi
     {
         for(int x = bottomX; x < topX; x+=step)
         {
-            if(x == 30)
-            {
-                std::cout<<30<<std::endl;
-            }
             lines.clear();
             ExtractLinesForSuperPixel(GDSIISuperPixel(x,y,step),lines);
             CodeType code = EMPTY;
@@ -66,25 +65,53 @@ void GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int pixelSi
                     GDSIILine l2 = **(++it);
                     code = _lineAnalizer.GetCode(l1,l2);
                 }break;
+                case 3:
+                {
+                    std::set<GDSIILine*>::iterator it = lines.begin();
+                    GDSIILine l1 = **it;
+                    GDSIILine l2 = **(++it);
+                    GDSIILine l3 = **(++it);
+                    code = _lineAnalizer.GetCode(l1,l2,l3);
+                }break;
                 default: code = ERROR_CODE;
             }
             codes.push_back(code);
+            //emit EncodedUpdate()
         }
     }
-    unsigned blockN = encW/step;
+    //PostEncodingAnalysis(codes);
+    unsigned blockN = static_cast<double>(encW)/step+0.5;
     std::string log="";
-    for(auto it = codes.end(); it>codes.begin(); it-=blockN)
+    bool isCodePut = false;
+    for(auto it = codes.end(); it>=codes.begin(); it-=blockN)
     {
         int pos = codes.size()-(codes.end()-(it-blockN));
         for(unsigned i = pos; i < pos+blockN;i++)
         {
-            log+=_charMap[codes[i]];
+            char cToPut = _charMap[codes[i]];
+            if(cToPut == 'X')
+            {
+                std::cout<<"X found!!!\n";
+            }
+            log+= cToPut;
+            isCodePut = true;
         }
-        log+='\n';
+        if(isCodePut)
+        {
+            if(pos!=0)
+            {
+                log+='\r';
+                log+='\n';
+            }
+            isCodePut = false;
+        }
     }
-    std::cout<<log;
+    return log;
 }
+void GDSIIDesignEncoder::PostEncodingAnalysis(std::vector<CodeType> &codes)
+{
 
+}
 void GDSIIDesignEncoder::ExtractLinesForSuperPixel(const GDSIISuperPixel &pix, std::set<GDSIILine *> &container)
 {
     std::cout<<"\tScanning lines for SP("<<pix._initPoint.GetX()<<","<<pix._initPoint.GetY()<<") Size:"<<pix._size<<std::endl;
@@ -119,6 +146,12 @@ void GDSIIDesignEncoder::ExtractLinesForSuperPixel(const GDSIISuperPixel &pix, s
             }
         }
     }
+
+//    for(auto it = _xCoordMap.begin(); it != xCoord.end(); it++)
+//    {
+
+//    }
+
     std::cout<<"Total lines detected: "<<container.size()<<std::endl;
 }
 

@@ -61,12 +61,16 @@ struct GDSIILineRefenceSet
 //L_UP_CORNER = 4,
 //R_LW_CORNER = 5,
 //L_LW_CORNER = 6,
-//ASC_CODE    = 7,// '/'
-//DESC_CODE   = 8,// '\'
-//ASC_DESC_U  = 9,// '^'
-//ASC_DESC_D = 10,// 'v'
-//ASC_DESC_L = 11,// '<'
-//ASC_DESC_R = 12,// '>'
+//Z_DEFAULT   = 7,
+//Z_ROTATED   = 8,
+//S_DEFAULT   = 9,
+//S_ROTATED   = 10,
+//ASC_CODE    = 11,// '/'
+//DESC_CODE   = 12,// '\'
+//ASC_DESC_U  = 13,// '^'
+//ASC_DESC_D  = 14,// 'v'
+//ASC_DESC_L  = 15,// '<'
+//ASC_DESC_R  = 16,// '>'
 class GDSIIDesignEncoder
 {
     std::map<CodeType,char> _charMap = {
@@ -78,12 +82,16 @@ class GDSIIDesignEncoder
         {L_UP_CORNER,'4'},
         {R_LW_CORNER,'5'},
         {L_LW_CORNER,'6'},
-        {ASC_CODE   ,'7'},
-        {DESC_CODE  ,'8'},
-        {ASC_DESC_U ,'9'},
-        {ASC_DESC_D ,'A'},
-        {ASC_DESC_L ,'B'},
-        {ASC_DESC_R ,'C'},
+        {Z_DEFAULT  ,'7'},
+        {Z_ROTATED  ,'8'},
+        {S_DEFAULT  ,'9'},
+        {S_ROTATED  ,'a'},
+        {ASC_CODE   ,'b'},
+        {DESC_CODE  ,'c'},
+        {ASC_DESC_U ,'d'},
+        {ASC_DESC_D ,'e'},
+        {ASC_DESC_L ,'f'},
+        {ASC_DESC_R ,'g'}
     };
     //singleton methods
     GDSIIDesignEncoder();
@@ -108,6 +116,7 @@ class GDSIIDesignEncoder
 
     void PrintReferencedMap() const;
     void PrepareData(GDSIILineContainer& container);
+    void PostEncodingAnalysis(std::vector<CodeType> &codes);
 
 public:
     static GDSIIDesignEncoder& GetInstance()
@@ -115,7 +124,7 @@ public:
         static GDSIIDesignEncoder _instance;
         return _instance;
     }
-    void Encode(const GDSIILineContainer &container, int pixelSize);
+    std::string Encode(const GDSIILineContainer &container, int pixelSize);
 
 private://trash
     std::map<int,int> _locationMap;

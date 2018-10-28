@@ -2,11 +2,11 @@
 #define FILEWRITER_H
 #include <fstream>
 
-constexpr std::string DEFAULT_PATH = "default_file_name.txt";
+const std::string DEFAULT_PATH = "default_file_name.txt";
 
 class FileWriter
 {
-    std::fstream _file;
+    std::ofstream _file;
     FileWriter();
     ~FileWriter();
     FileWriter(const FileWriter&);
@@ -17,7 +17,7 @@ public:
         static FileWriter _instance;
         return _instance;
     }
-    void WriteStringToFile(const std::string &filePath = DEFAULT_PATH, const std::string &data);
+    void WriteStringToFile(const std::string &data,const std::string &filePath = DEFAULT_PATH);
 };
 
 #endif // FILEWRITER_H

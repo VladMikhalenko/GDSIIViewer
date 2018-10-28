@@ -1,15 +1,15 @@
 #ifndef GSDIIPAINTER_H
 #define GSDIIPAINTER_H
 
-#include "inc/LithographyTools/IntensityField.h"
+#include "inc/GUI/GDSIILineContainer.h"
 #include "utils/Convert/GDSIIConverter.h"
-class GDSIIImageBulder
+class GDSIIImageBuilder
 {
 
 public:
-    GDSIIImageBulder();
-    void IntensityFieldToJPG(const std::string &imgName, const IntensityField& field);
-    void Process
+    GDSIIImageBuilder();
+    static void DrawLineContainerOnImage(QImage &image, const GDSIILineContainer& container);
+    static void SaveIntensityFieldAsJpg(const IntensityField& field,const std::string& name);
 };
 
 #endif // GSDIIPAINTER_H

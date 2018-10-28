@@ -6,6 +6,8 @@
 #include "inc/LithographyTools/LineAnalyzer.h"
 #include "inc/GUI/GDSIILineContainer.h"
 #include "utils/Encoder/GDSIIDesignEncoder.h"
+#include <fstream>
+
 //функци распределения значений цвета на промежутке y1 y2
 double FindYCoordT(double x1,double y1, double x2,double y2,double x)
 {
@@ -204,29 +206,141 @@ int RunDiag2()
     GDSIIDesignEncoder::GetInstance().Encode(cont,10);
     return 0;
 }
+int Run3LineTest()
+{
+    //s code
+    GDSIILine s1(15,15,15,25);
+    GDSIILine s2( 5,15,15,15);
+    GDSIILine s3(15,25,30,25);
+    //z code
+    GDSIILine z1(15,15,15,25);
+    GDSIILine z2( 5,25,15,25);
+    GDSIILine z3(15,15,30,15);
+    //s rotated
+    GDSIILine s4(15,15,15,25);
+    GDSIILine s5( 5,25,15,25);
+    GDSIILine s6( 5,25, 5,35);
+    //z rotated
+    GDSIILine z4( 5,15, 5,25);
+    GDSIILine z5( 5,25,15,25);
+    GDSIILine z6(15,25,15,35);
+
+
+    LineAnalyzer analys;
+    std::cout<<"S(9)="<<analys.GetCode(s1,s2,s3)<<std::endl;
+    std::cout<<"Z(7)="<<analys.GetCode(z1,z2,z3)<<std::endl;
+    std::cout<<"SR(10)="<<analys.GetCode(s4,s5,s6)<<std::endl;
+    std::cout<<"ZR(8)="<<analys.GetCode(z4,z5,z6)<<std::endl;
+    return 0;
+}
+int largeTest()
+{
+    GDSIILine a1(10,75,10,95);
+    GDSIILine a2(10,95,65,95);
+    GDSIILine a3(65,95,65,75);
+    GDSIILine a4(65,75,10,75);
+
+    GDSIILine b1(75,85,75,95);
+    GDSIILine b2(75,95,115,95);
+    GDSIILine b3(115,95,115,75);
+    GDSIILine b4(115,75,95,75);
+    GDSIILine b5(95,75,95,85);
+    GDSIILine b6(95,85,75,85);
+
+    GDSIILine c1(65,10,65,25);
+    GDSIILine c2(65,25,85,25);
+    GDSIILine c3(85,25,85,35);
+    GDSIILine c4(85,35,95,35);
+    GDSIILine c5(95,35,95,45);
+    GDSIILine c6(95,45,105,45);
+    GDSIILine c7(105,45,105,10);
+    GDSIILine c8(105,10,65,10);
+
+    GDSIILineContainer cont;
+    cont.AddLine(a1);
+    cont.AddLine(a2);
+    cont.AddLine(a3);
+    cont.AddLine(a4);
+
+    cont.AddLine(b1);
+    cont.AddLine(b2);
+    cont.AddLine(b3);
+    cont.AddLine(b4);
+    cont.AddLine(b5);
+    cont.AddLine(b6);
+
+    cont.AddLine(c1);
+    cont.AddLine(c2);
+    cont.AddLine(c3);
+    cont.AddLine(c4);
+    cont.AddLine(c5);
+    cont.AddLine(c6);
+    cont.AddLine(c7);
+    cont.AddLine(c8);
+
+    ContainerPrinter(cont);
+    std::cout<<"|-------------------TEST-------------------|"<<std::endl;
+    GDSIIDesignEncoder::GetInstance().Encode(cont,10);
+    std::cout<<"|-------------------||||-------------------|"<<std::endl;
+    return 0;
+}
+int BoundaryTest()
+{
+    const int x_min = 20;
+    const int y_min = 15;
+    const int x_max = 40;
+    const int y_max = 35;
+    LayerForView l4v;
+    std::vector<GDSIIPoint> points = {
+        GDSIIPoint(25,40),
+        GDSIIPoint(30,40),
+        GDSIIPoint(30,30),
+        GDSIIPoint(45,30),
+        GDSIIPoint(45,20),
+        GDSIIPoint(25,20),
+        GDSIIPoint(25,40)
+    };
+    std::vector<GDSIIPoint> points2 = {
+        GDSIIPoint(5,18),
+        GDSIIPoint(5,30),
+        GDSIIPoint(15,30),
+        GDSIIPoint(15,45),
+        GDSIIPoint(45,45),
+        GDSIIPoint(45,18),
+        GDSIIPoint(5,18)
+    };
+    Boundary b,b2;
+    b.SetPoints(points,points.size());
+    b2.SetPoints(points2,points2.size());
+    l4v.AddBoundary(&b);
+    l4v.AddBoundary(&b2);
+    l4v.GetLineContainerForArea(x_min,y_min,x_max,y_max);
+    return 0;
+}
+
+int DoublingTest()
+{
+    GDSIILine a(20,10,20,90);
+    GDSIILine b(20,90,80,90);
+    GDSIILine c(80,90,80,10);
+    GDSIILine d(80,10,20,10);
+    GDSIILine m(0,110,110,110);
+    GDSIILineContainer C;
+    C.AddLine(a);
+    C.AddLine(b);
+    C.AddLine(c);
+    C.AddLine(d);
+    C.AddLine(m);
+    C.SetAreaHeight(120);
+    C.SetAreaWidth(120);
+    C.SetBottomX(0);
+    C.SetBottomY(0);
+    std::cout<<GDSIIDesignEncoder::GetInstance().Encode(C,20);
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
-//    kernel_type kernel=GaussianKernel::CalculateGaussian2DKernel(100);
-//    QImage img("HotSpot_0.jpg");
-//    QPainter p(&img);
-//    QLine l(50,50,200,200);
-
-//    //std::cout<<FindYCoordT(0.5,0,1.0,255.0,0.75)<<std::endl;
-//    //int y=FindYCoord(50,50,10,6,4);
-//    ShootBlackRayT(img,QPoint(200,100),kernel);
-//    ShootBlackRayT(img,QPoint(200,150),kernel);
-
-//    img.save("Shot_HS_0.jpg","JPG");
-
-//    kernel_type kernel= GaussianKernel::CalculateGaussian2DKernel(2);
-//    std::cout << std::setprecision(5) << std::fixed;
-//    for (size_t row = 0; row < kernel.size(); row++) {
-//        for (size_t col = 0; col < kernel[row].size(); col++)
-//          std::cout << kernel[row][col] << ' ';
-//        std::cout << '\n';
-//    }
-//    return 0;
 //    GlobalOptions::SetFileName("D:\\gdsFolder\\Tests\\Bin_AREF_test_with_angle_0");
 //    GlobalOptions::SetSourceType(FILE_SOURCE);
 //    //GDSIIRecord* rec=RecordSupplier::GetInstance().NextRecord().get();
@@ -250,7 +364,13 @@ int main(int argc, char *argv[])
 //GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
 //return RunTEST1();
 //return RunMAIN(argc,argv);
-return RunDiag2();
+//return RunDiag2();
 //return RunTEST1();
-//return RunMAIN(argc,argv);
+//return largeTest();
+//return BoundaryTest();
+//    return writerTest();
+//return Run3LineTest();
+//return DoublingTest();
+return RunMAIN(argc,argv);
+
 }

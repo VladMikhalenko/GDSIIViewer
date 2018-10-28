@@ -4,8 +4,6 @@
 #include "GDSIIElement.h"
 class Path:public GDSIIElement
 {
-    //Point* points;
-    std::vector<GDSIIPoint> points;
     short DATATYPE;//????
     short PATHTYPE;
     int BGNEXTN;
@@ -22,8 +20,7 @@ public:
     ~Path();
     void Show();
 
-    std::vector<GDSIIPoint> GetPoints();
-    void SetPoints(const std::vector<GDSIIPoint> &points, int amount);
+    void SetPoints(const std::vector<GDSIIPoint> &source, int amount);
 
     void SetPathType(short p_type);
     short GetPathType();

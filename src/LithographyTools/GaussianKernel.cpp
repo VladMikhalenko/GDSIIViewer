@@ -19,7 +19,7 @@ double GaussianKernel::GaussianFunc(double x, double sigma,double alpha,double m
     return exp(-(((x-mu)/sigma)*((x-mu)/sigma))/2.0)*alpha;
 }
 
-kernel_type GaussianKernel::CalculateGaussian2DKernel(int radius,int kernel_size,double sigma,double alpha)
+kernel_type GaussianKernel::CalculateGaussian2DKernel(int kernel_size,double sigma,double alpha)
 {
     //const int kernel_size=1199;//*radius+1;//1201;
     //const double sigma=radius/2.5;//bell width

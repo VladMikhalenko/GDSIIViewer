@@ -5,9 +5,6 @@
 
 class Text:public GDSIIElement
 {
-    //Point* point;//XY
-    std::vector<GDSIIPoint> points;
-
     //textbody
     short TEXTTYPE;
     std::bitset<16> PRESENTATION;
@@ -30,8 +27,7 @@ public:
     ~Text();
     void Show();
 
-    std::vector<GDSIIPoint> GetPoints();
-    void SetPoints(const std::vector<GDSIIPoint> &p,int amount);
+    void SetPoints(const std::vector<GDSIIPoint> &source, int amount);
 
     void SetTextType(short t_type);
     short GetTextType();

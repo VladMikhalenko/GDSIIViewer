@@ -124,17 +124,14 @@ bool Text::HasWidth(){
     return widthFlag;
 }
 
-std::vector<GDSIIPoint> Text::GetPoints(){
-    return points;
-}
-void Text::SetPoints(const std::vector<GDSIIPoint> &p,int amount)
+void Text::SetPoints(const std::vector<GDSIIPoint> &source,int amount)
 {
     if(amount==1)//amount>0 && amount<2)
     {
         this->points.clear();
-        points.resize(1);
+        points.reserve(1);
         amountOfPoints=amount;
-        points[0]=p[0];
+        points.push_back(source[0]);
     }
     else
     {

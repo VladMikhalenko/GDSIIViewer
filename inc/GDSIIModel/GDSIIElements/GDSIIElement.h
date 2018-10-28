@@ -16,8 +16,9 @@ public:
     virtual ~GDSIIElement();
     virtual void Show();
 
-    virtual  std::vector<GDSIIPoint> GetPoints()=0;
-    virtual void SetPoints(const std::vector<GDSIIPoint> &points, int amount)=0;
+    std::vector<GDSIIPoint> GetPoints();
+    virtual void SetPoints(const std::vector<GDSIIPoint> &source, int amount)=0;
+    GDSIIPoint GetPointAt(size_t index) const;
 
     int GetAmountOfPoints();
 
@@ -43,6 +44,7 @@ public:
     std::vector<std::string> GetPropValue();
 
 protected:
+    std::vector<GDSIIPoint> points;
     std::bitset<16> ELFLAGS;
     int PLEX;
     int amountOfPoints;

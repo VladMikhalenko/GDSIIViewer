@@ -85,16 +85,14 @@ bool AREF::HasMAG()
     return magFlag;
 }
 
-std::vector<GDSIIPoint> AREF::GetPoints(){
-    return points;
-}
-void AREF::SetPoints(const std::vector<GDSIIPoint> &points,int amount ){
+void AREF::SetPoints(const std::vector<GDSIIPoint> &source,int amount ){
     if(amount==3)//amount>0 && amount<=3)
     {
-        this->points.clear();
+        points.clear();
+        points.reserve(amount);
         amountOfPoints=amount;
         for(int i=0;i<amount;i++)
-            this->points.push_back(points[i]);
+            points.push_back(source[i]);
     }
     else
     {

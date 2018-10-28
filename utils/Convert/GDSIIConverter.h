@@ -53,8 +53,8 @@ public:
                 return std::shared_ptr<GDSIIElement>(nullptr);
         }
     }
-    std::shared_ptr<QImage> Convert(const IntensityField &f);
-
+    //std::shared_ptr<QImage> Convert(const IntensityField &f);
+    QImage Convert(const IntensityField &f);
 
 };
 

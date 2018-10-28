@@ -49,6 +49,8 @@ private:
     int ProjectWidth;
     int ProjectHeight;
 
+    int extractionLayer;
+    int markerLayer;
 	
 	void paintEvent(QPaintEvent *event);
     void SetProjectWidth(int width);
@@ -69,9 +71,12 @@ private slots:
     void CalculateWindowPoints(double value);
     void ZoomValueChanged(int value);
     void LayerValueChanged(int value);
+    void extractionLayerChanged(int value);
+    void markerLayerChanged(int value);
 
     void BtnOkClick();
     void BtnScannClick();
+    void btnEncodeClick();
 
     void HorizontalScrollChanged(int value);
     void VerticalScrollChanged(int value);

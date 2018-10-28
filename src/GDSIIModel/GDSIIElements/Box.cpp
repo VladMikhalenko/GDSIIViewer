@@ -31,16 +31,14 @@ short Box::GetBoxType()
     return BOXTYPE;
 }
 
-std::vector<GDSIIPoint> Box::GetPoints(){
-    return points;
-}
-void Box::SetPoints(const std::vector<GDSIIPoint> &points, int amount){
+void Box::SetPoints(const std::vector<GDSIIPoint> &source, int amount){
     if(amount==5)//amount>0 && amount<=5)
     {
-        this->points.clear();
+        points.clear();
+        points.reserve(amount);
         amountOfPoints=amount;
         for(int i=0;i<amount;i++)
-            this->points.push_back(points[i]);
+            points.push_back(source[i]);
     }
     else
     {

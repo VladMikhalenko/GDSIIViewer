@@ -15,6 +15,7 @@ public:
 
     GDSIIPoint operator - (const GDSIIPoint &p);
     GDSIIPoint operator + (const GDSIIPoint &p);
+    GDSIIPoint& operator = (const GDSIIPoint &p);
     bool operator == (const GDSIIPoint &p);
     bool operator != (const GDSIIPoint &p);
 

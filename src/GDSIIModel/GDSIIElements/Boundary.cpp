@@ -30,18 +30,16 @@ short Boundary::GetDataType(){
     return DATATYPE;
 }
 
-std::vector<GDSIIPoint> Boundary::GetPoints()
-{
-    return points;
-}
 
-void Boundary::SetPoints(const std::vector<GDSIIPoint> &points,int amount){
+
+void Boundary::SetPoints(const std::vector<GDSIIPoint> &source,int amount){
     if(amount>=4 && amount<=200)
     {
         amountOfPoints=amount;
-        this->points.clear();
+        points.clear();
+        points.reserve(amount);
         for(int i=0;i<amount;i++)
-            this->points.push_back(points[i]);
+            points.push_back(source[i]);
     }
     else
     {

@@ -10,7 +10,7 @@ class GaussianKernel
     static double GaussianFunc(double x, double sigma, double alpha=1.0, double mu=0);
 public:
     GaussianKernel();
-    static kernel_type CalculateGaussian2DKernel(int kernel_radius, int kernel_size, double sigma, double alpha);
+    static kernel_type CalculateGaussian2DKernel(int kernel_size, double sigma, double alpha);
 };
 
 #endif // GAUSSIANKERNEL_H

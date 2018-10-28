@@ -1,9 +1,12 @@
 #include "inc/GDSIIModel/GDSIIElements/SREF.h"
 
 SREF::SREF():
-    GDSIIElement(),
-    angleFlag(false),
-    magFlag(false)
+    GDSIIElement()
+  , SNAME()
+  , MAG(0.0)
+  , ANGLE(0.0)
+  , magFlag(false)
+  , angleFlag(false)
 {
     ID=EL_SREF;
 }
@@ -30,7 +33,7 @@ std::shared_ptr<GDSIIStructure> SREF::GetReference()
 void SREF::Show(){
     std::cout<<"---SREF---:\n";
     GDSIIElement::Show();
-    std::cout<<"Point:["<<point[0].GetX()<<","<<point[0].GetY()<<"]\n";
+    std::cout<<"Point:["<<points[0].GetX()<<","<<points[0].GetY()<<"]\n";
     std::cout<<"\nSNAME:"<<SNAME<<std::endl
              <<"MAG:"<<(HasMAG()? std::to_string(MAG):"not set")<<std::endl
              <<"ANGLE:"<<(HasANGLE()? std::to_string(ANGLE):"not set")<<std::endl;
@@ -74,16 +77,12 @@ bool SREF::HasMAG()
     return magFlag;
 }
 
-std::vector<GDSIIPoint> SREF::GetPoints()
-{
-    return point;
-}
-void SREF::SetPoints(const std::vector<GDSIIPoint> &p, int amount){
+void SREF::SetPoints(const std::vector<GDSIIPoint> &source, int amount){
     if(amount>0 && amount<2)
     {
-        point.clear();
-        point.resize(1);
-        point[0]=p[0];//some kostil
+        points.clear();
+        points.reserve(1);
+        points.push_back(source[0]);;//some kostil
         amountOfPoints=amount;
     }
     else

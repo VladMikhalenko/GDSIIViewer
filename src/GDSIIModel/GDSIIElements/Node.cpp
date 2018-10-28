@@ -29,16 +29,14 @@ void Node::SetNodeType(short n_type){
     NODETYPE=n_type;
 }
 
-std::vector<GDSIIPoint> Node::GetPoints(){
-    return points;
-}
-void Node::SetPoints(const std::vector<GDSIIPoint> &points,int amount){
+void Node::SetPoints(const std::vector<GDSIIPoint> &source,int amount){
     if(amount>=2 && amount<=50)
     {
-        this->points.clear();
+        points.clear();
+        points.reserve(amount);
         amountOfPoints=amount;
         for(int i=0;i<amount;i++)
-            this->points.push_back(points[i]);
+            points.push_back(source[i]);
     }
     else
     {

@@ -8,8 +8,6 @@ class SREF:public GDSIIElement
 {
     std::shared_ptr<GDSIIStructure> _structure;
     std::string SNAME;
-    //Point* point;
-    std::vector<GDSIIPoint> point;
     //strans part
     double MAG;
     double ANGLE;
@@ -19,8 +17,7 @@ class SREF:public GDSIIElement
 public:
     SREF();
     ~SREF();
-    std::vector<GDSIIPoint> GetPoints();
-    void SetPoints(const std::vector<GDSIIPoint> &p,int amount);
+    void SetPoints(const std::vector<GDSIIPoint> &source, int amount);
 
     void SetSNAME(std::string name);
     std::string GetSNAME();

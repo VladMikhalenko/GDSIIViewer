@@ -1,11 +1,17 @@
 #include "inc/GDSIIModel/GDSIIElements/GDSIIElement.h"
 
 GDSIIElement::GDSIIElement():
-    elfFlag(false),
-    plexFlag(false),
-    propFlag(false),
-    amountOfPoints(0),
-    ID(EL_UNDEFINED)
+    points(0)
+   ,ELFLAGS(0)
+   ,PLEX(0)
+   ,amountOfPoints(0)
+   ,_layer(0)
+   ,propAttributes(0)
+   ,propValues(0)
+   ,elfFlag(false)
+   ,plexFlag(false)
+   ,propFlag(false)
+   ,ID(EL_UNDEFINED)
 {}
 
 GDSIIElement::~GDSIIElement(){
@@ -122,4 +128,21 @@ int GDSIIElement::GetAmountOfPoints()
 ElementID GDSIIElement::GetID()
 {
     return this->ID;
+}
+
+std::vector<GDSIIPoint> GDSIIElement::GetPoints()
+{
+    return points;
+}
+
+GDSIIPoint GDSIIElement::GetPointAt(size_t index) const
+{
+    if(index < points.size())
+    {
+        return points[index];
+    }
+    else
+    {
+        throw std::out_of_range("GDSIIElement::GetPointAt() index out of range");
+    }
 }

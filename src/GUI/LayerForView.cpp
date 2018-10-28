@@ -39,81 +39,32 @@ std::shared_ptr<GDSIILineContainer> LayerForView::GetLineContainerForArea(int x_
     int layerXMin=INT32_MAX;
     int layerYMin=INT32_MAX;
 
-/*    QPoint cur;
-    QPoint next;
-    for(int i=0;i<boundaries.size();i++)
-    {
-        Boundary* b=&boundArr[i];
-        Point* b_points=b->GetPoints();
+    GatherLinesFromElementForArea(boundaries,container,x_min,y_min,x_max,y_max,layerXMin,layerYMin,layerXMax,layerYMax);
+    GatherLinesFromElementForArea(paths,container,x_min,y_min,x_max,y_max,layerXMin,layerYMin,layerXMax,layerYMax);
+    container->SetAreaWidth(x_max-x_min);
+    container->SetAreaHeight(y_max-y_min);
+    container->SetBottomX(x_min);
+    container->SetBottomY(y_min);
+    return container;
+}
+std::shared_ptr<GDSIILineContainer> LayerForView::GetLineContainerToDraw()
+{
+    std::shared_ptr<GDSIILineContainer> container=std::make_shared<GDSIILineContainer>(GDSIILineContainer());
 
-        layerXMax=b_points[0].x_coord>layerXMax? b_points[0].x_coord: layerXMax;
-        layerXMin=b_points[0].x_coord<layerXMin? b_points[0].x_coord: layerXMin;
-        layerYMax=b_points[0].y_coord>layerYMax? b_points[0].y_coord: layerYMax;
-        layerYMin=b_points[0].y_coord<layerYMin? b_points[0].y_coord: layerYMin;
+    const int x_min=INT32_MIN;
+    const int y_min=INT32_MIN;
+    const int x_max=INT32_MAX;
+    const int y_max=INT32_MAX;
 
-        cur=QPoint(b_points[0].x_coord,b_points[0].y_coord);
-        for(int j=1;j<b->GetAmountOfPoints();j++)
-        {
-            next=QPoint(b_points[j].x_coord,b_points[j].y_coord);
-            if((cur.x()>=x_min && cur.y()>=y_min && cur.x()<=x_max && cur.y()<=y_max) ||
-               (next.x()>=x_min && next.y()>=y_min && next.x()<=x_max && next.y()<=y_max)
-            )
-            {
-                if(next.x()>layerXMax)
-                    layerXMax=next.x();
-                else if(next.x()<layerXMin)
-                    layerXMin=next.x();
-                if(next.y()>layerYMax)
-                    layerYMax=next.y();
-                else if(next.y()<layerYMin)
-                    layerYMin=next.y();
+    int layerXMax=INT32_MIN;
+    int layerYMax=INT32_MIN;
+    int layerXMin=INT32_MAX;
+    int layerYMin=INT32_MAX;
 
-                container->AddLine(QLine(cur,next));
-
-            }
-            cur=next;
-        }
-    }
-
-    for(int i=0;i<paths.size();i++)
-    {
-        Path* path=&pathArr[i];
-        Point* p_points=path->GetPoints();
-
-        layerXMax=p_points[0].x_coord>layerXMax? p_points[0].x_coord: layerXMax;
-        layerXMin=p_points[0].x_coord<layerXMin? p_points[0].x_coord: layerXMin;
-        layerYMax=p_points[0].y_coord>layerYMax? p_points[0].y_coord: layerYMax;
-        layerYMin=p_points[0].y_coord<layerYMin? p_points[0].y_coord: layerYMin;
-
-        cur=QPoint(p_points[0].x_coord,p_points[0].y_coord);
-        for(int j=1;j<path->GetAmountOfPoints();j++)
-        {
-            next=QPoint(p_points[j].x_coord,p_points[j].y_coord);
-
-            if((cur.x()>=x_min && cur.y()>=y_min && cur.x()<=x_max && cur.y()<=y_max) ||
-               (next.x()>=x_min && next.y()>=y_min && next.x()<=x_max && next.y()<=y_max)
-            )
-            {
-                if(next.x()>layerXMax)
-                    layerXMax=next.x();
-                else if(cur.x()<layerXMin)
-                    layerXMin=next.x();
-                if(next.y()>layerYMax)
-                    layerYMax=next.y();
-                else if(next.y()<layerYMin)
-                    layerYMin=next.y();
-                container->AddLine(QLine(cur,next));
-            }
-
-
-            cur=next;
-        }
-    }
-*/
-    GatherLinesFromElement(boundaries,container,x_min,y_min,x_max,y_max,layerXMin,layerYMin,layerXMax,layerYMax);
-    GatherLinesFromElement(paths,container,x_min,y_min,x_max,y_max,layerXMin,layerYMin,layerXMax,layerYMax);
-    container->SetAreaWidth(layerXMax-layerXMin);//layerXMin<0?layerXMax-layerXMin:layerXMax);
-    container->SetAreaHeight(layerYMax-layerYMin);//layerYMin<0?layerYMax-layerYMin:layerYMax);
+    GatherLinesFromElementForArea(boundaries,container,x_min,y_min,x_max,y_max,layerXMin,layerYMin,layerXMax,layerYMax);
+    GatherLinesFromElementForArea(paths,container,x_min,y_min,x_max,y_max,layerXMin,layerYMin,layerXMax,layerYMax);
+    container->SetAreaWidth(layerXMax-layerXMin);
+    container->SetAreaHeight(layerYMax-layerYMin);
     container->SetBottomX(layerXMin);
     container->SetBottomY(layerYMin);
     return container;

@@ -5,16 +5,12 @@
 class Box: public GDSIIElement
 {
     short BOXTYPE;
-    //Point* points;
-    std::vector<GDSIIPoint> points;
 public:
     Box();
     ~Box();
     void Show();
 
-
-    std::vector<GDSIIPoint> GetPoints();
-    void SetPoints(const std::vector<GDSIIPoint> &points,int amount);
+    void SetPoints(const std::vector<GDSIIPoint> &source, int amount);
 
     void SetBoxType(short b_type);
     short GetBoxType();

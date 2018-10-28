@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "utils/Encoder/GDSIIDesignEncoder.h"
+#include "utils/FileWriter/FileWriter.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -38,7 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->btnScann,SIGNAL(clicked()),this,SLOT(BtnScannClick()));
 
+    QObject::connect(ui->btnEncode,SIGNAL(clicked()),this,SLOT(btnEncodeClick()));
+
     QObject::connect(ui->spbLayer,SIGNAL(valueChanged(int)),this,SLOT(LayerValueChanged(int)));
+
+    QObject::connect(ui->spbExtrLayer,SIGNAL(valueChanged(int)),this,SLOT(extractionLayerChanged(int)));
+
+    QObject::connect(ui->spbMarker,SIGNAL(valueChanged(int)),this,SLOT(markerLayerChanged(int)));
 
     QObject::connect(this,SIGNAL(ZoomValueUpdated(double)),dArea.get(),SLOT(ScaleValueChanged(double)));
     //QObject::connect(this,SIGNAL(ZoomValueUpdated(double)),this,SLOT(CalculateWindowPoints(double)));
@@ -63,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnOK->setEnabled(false);
     ui->spbLayer->setEnabled(false);
     ui->spbZoom->setEnabled(false);
+    ui->spbMarker->setValue(21);
+    ui->spbExtrLayer->setValue(10);
     //CalculateScrolls(ui->spbZoom->value());
 }
 
@@ -107,8 +116,6 @@ void MainWindow::CalculateWindowPoints(double value){
 }
 
 void MainWindow::ZoomValueChanged(int value){
-    static int fucking_count=0;
-    qDebug()<<"Call zoom val changed"<<fucking_count++<<"\n";
     zoomCoef=ZoomConvert(value);
     //qDebug()<<"COEF value:"<<zoomCoef;
     emit ZoomValueUpdated(zoomCoef);
@@ -140,6 +147,16 @@ void MainWindow::LayerValueChanged(int value){
     //dArea->SetLineContainer(cont);
 }
 
+void MainWindow::extractionLayerChanged(int value)
+{
+    extractionLayer = value;
+}
+
+void MainWindow::markerLayerChanged(int value)
+{
+    markerLayer = value;
+}
+
 void MainWindow::GetNewLayerFromDesign()
 {
     if(ui->rbOne->isChecked())
@@ -158,11 +175,11 @@ void MainWindow::PrepareLineContainerForDrawing()
     if(layerForView!=0)
     {
         //добавить учет позиции окна
-        std::shared_ptr<GDSIILineContainer> cont=layerForView->GetLineContainerForArea(winMinX,winMinY,winMaxX,winMaxY);
+        std::shared_ptr<GDSIILineContainer> cont=layerForView->GetLineContainerToDraw(); //GetLineContainerForArea(winMinX,winMinY,winMaxX,winMaxY);
         //qDebug()<<"Layer size:"<<cont->GetAreaWidth()<<"x"<<cont->GetAreaHeight();
         //GDSIIDesignEncoder::GetInstance().PrepareData(*cont);
-        cont->PerformShift();
-        GDSIIDesignEncoder::GetInstance().Encode(*cont,1000);
+        //cont->PerformShift();
+        //GDSIIDesignEncoder::GetInstance().Encode(*cont,1000); MOVED TO ENCODE CLICK
         SetProjectWidth(cont->GetAreaWidth());
         SetProjectHeight(cont->GetAreaHeight());
         CalculateWindowToProjectCoef();
@@ -194,9 +211,27 @@ void MainWindow::BtnOkClick(){
 }
 void MainWindow::BtnScannClick()
 {
-    scanner->ScannLayer(10,21);
+    //scanner->ScannLayer(extractionLayer,markerLayer);
+    //scanner->PerformScanning(extractionLayer,markerLayer);
+    scanner->ExtractMarkedAreasWithGaussAsJPG(extractionLayer,markerLayer);
 }
 
+void MainWindow::btnEncodeClick()
+{
+//    ResetWindowBorders();
+//    GetNewLayerFromDesign();
+//    std::shared_ptr<GDSIILineContainer> cont=layerForView->GetLineContainerForArea(winMinX,winMinY,winMaxX,winMaxY);
+//    cont->PerformShift();
+    std::vector<GDSIILineContainer> v = scanner->ExtractAllMarkedAreas(extractionLayer,markerLayer);
+    for(unsigned long long i = 0; i < v.size();i++)
+    {
+        auto item = v[i];
+        item.PerformShift();
+        std::string code = GDSIIDesignEncoder::GetInstance().Encode(item,20);
+        FileWriter::GetInstance().WriteStringToFile("Code_"+std::to_string(i)+".code",code);
+    }
+
+}
 double MainWindow::ZoomConvert(int value)
 {
     return value/100.0;

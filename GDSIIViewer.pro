@@ -120,7 +120,8 @@ SOURCES += \
     utils/Encoder/GDSIIDesignEncoder.cpp \
     utils/Encoder/GDSIIEncoder.cpp \
     utils/FileWriter/FileWriter.cpp \
-    utils/GDSIIPainter/GDSIIImageBuilder.cpp
+    utils/GDSIIPainter/GDSIIImageBuilder.cpp \
+    src/LithographyTools/GaussianProcessor.cpp
 
 HEADERS += \
     HotSpotScaner.h \
@@ -222,10 +223,10 @@ HEADERS += \
     utils/Encoder/GDSIIDesignEncoder.h \
     utils/Encoder/GDSIIEncoder.h \
     utils/FileWriter/FileWriter.h \
-    utils/GDSIIPainter/GDSIIImageBuilder.h
+    utils/GDSIIPainter/GDSIIImageBuilder.h \
+    inc/LithographyTools/GaussianProcessor.h
 
 FORMS += \
-    mainwindow.ui \
     mainwindow.ui
 
 # Default rules for deployment.
