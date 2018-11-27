@@ -62,6 +62,7 @@ public:
     GDSIIPoint GetGreatPoint(const GDSIILine &l) const;
     bool CompareLines(const GDSIIPoint &p1, const GDSIIPoint &p2) const;
     bool LineBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSIILine &l);
+    bool LineCoincideWithSuperPixelBorder(const GDSIISuperPixel &pix, const GDSIILine &l);
     bool PointBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSIIPoint &p);
 
     void SortLineContainer(GDSIILineContainer& container);

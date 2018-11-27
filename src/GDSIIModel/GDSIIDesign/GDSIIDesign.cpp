@@ -196,7 +196,7 @@ double GDSIIDesign::GetSizeInMeters(){
     return sizeInMeters;
 }
 
-std::shared_ptr<GDSIIStructure> GDSIIDesign::GetStructureByName(const std::__cxx11::string &sname)
+std::shared_ptr<GDSIIStructure> GDSIIDesign::GetStructureByName(const std::string &sname)
 {
     for(auto it=structures.begin();it!=structures.end();it++)//unsigned i=0;i<structures.size();i++)
     {

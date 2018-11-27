@@ -574,7 +574,21 @@ bool LineAnalyzer::LineBelongToSuperPixel(const GDSIISuperPixel &pix, const GDSI
 //    }
 
 }
-
+bool LineAnalyzer::LineCoincideWithSuperPixelBorder(const GDSIISuperPixel &pix, const GDSIILine &l)
+{
+    GDSIIPoint init = pix._initPoint;
+    GDSIIPoint topRight(pix.GetXLimit(),pix.GetYLimit());
+    LineType type = GetLineType(l);
+    if(type == VERTICAL_LINE)
+    {
+        return (l.GetP1().GetX() == l.GetP2().GetX()) && ((l.GetP1().GetX() == init.GetX()) || (l.GetP1().GetX() == topRight.GetX()));
+    }
+    else if(type == HORIZONTAL_LINE)
+    {
+        return (l.GetP1().GetY() == l.GetP2().GetY()) && ((l.GetP1().GetY() == init.GetY()) || (l.GetP1().GetY() == topRight.GetY()));
+    }
+    return false;
+}
 bool LineAnalyzer::CheckPointBelongToArea(GDSIIPoint p, int x_min, int y_min, int x_max, int y_max)
 {
     return p.GetX()>=x_min &&

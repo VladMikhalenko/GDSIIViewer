@@ -100,7 +100,7 @@ int Text::GetWidth(){
     return 0;//throw AnError();
 }
 
-void Text::SetString(std::__cxx11::string str){
+void Text::SetString(std::string str){
     STRING=str;
 }
 std::string Text::GetString(){

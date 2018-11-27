@@ -34,7 +34,7 @@ private:
     void DrawLine(QPainter* painter,QLine line);
     void DrawBorders(QPainter* painter);
     void DrawRectangle(QPainter* painter,QRect rectangle);
-private slots:
+private Q_SLOTS:
     void HorizontalScrollValueChanged(int value);
     void VerticalScrollValueChanged(int value);
     void ScaleValueChanged(double value);

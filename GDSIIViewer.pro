@@ -21,7 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
-
+CONFIG += no_keywords
 SOURCES += \
     HotSpotScaner.cpp \
     main.cpp \
@@ -121,7 +121,12 @@ SOURCES += \
     utils/Encoder/GDSIIEncoder.cpp \
     utils/FileWriter/FileWriter.cpp \
     utils/GDSIIPainter/GDSIIImageBuilder.cpp \
-    src/LithographyTools/GaussianProcessor.cpp
+    src/LithographyTools/GaussianProcessor.cpp \
+    utils/Encoder/PostEncodeAnalyzer.cpp \
+    utils/Python/PythonHelper/PythonHelper.cpp \
+    utils/Python/PythonHelper/NumpyArray.cpp \
+    utils/Python/PythonHelper/PythonModule.cpp \
+    utils/Python/PythonHelper/PythonMethod.cpp
 
 HEADERS += \
     HotSpotScaner.h \
@@ -224,7 +229,13 @@ HEADERS += \
     utils/Encoder/GDSIIEncoder.h \
     utils/FileWriter/FileWriter.h \
     utils/GDSIIPainter/GDSIIImageBuilder.h \
-    inc/LithographyTools/GaussianProcessor.h
+    inc/LithographyTools/GaussianProcessor.h \
+    utils/Encoder/PostEncodeAnalyzer.h \
+    utils/Python/PythonHelper/PythonHelper.h \
+    utils/Python/PythonHelper/NumpyArray.h \
+    utils/Python/PythonHelper/PythonModule.h \
+    utils/Python/PythonHelper/PythonMethod.h
+
 
 FORMS += \
     mainwindow.ui
@@ -237,4 +248,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 SUBDIRS += \
     GDSIIViewer.pro
 
-DISTFILES +=
+#DISTFILES +=
+
+win32: LIBS += -LC:/Python/Anaconda3/libs/ -lpython37
+
+INCLUDEPATH += C:/Python/Anaconda3/include
+DEPENDPATH += C:/Python/Anaconda3/include
+
+win32:!win32-g++: PRE_TARGETDEPS += C:/Python/Anaconda3/libs/python37.lib
+else:win32-g++: PRE_TARGETDEPS += C:/Python/Anaconda3/libs/libpython37.a

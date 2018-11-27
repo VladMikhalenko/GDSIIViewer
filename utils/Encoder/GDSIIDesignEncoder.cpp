@@ -56,7 +56,7 @@ std::string GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int 
                 case 1:
                 {
                     const GDSIILine* lp = *lines.begin();
-                    code = _lineAnalizer.GetCode(*lp);//_lineAnalizer.GetCode(*lines[0]);
+                    code = _lineAnalizer.GetCode(*lp);
                 }break;
                 case 2:
                 {
@@ -79,7 +79,7 @@ std::string GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int 
             //emit EncodedUpdate()
         }
     }
-    //PostEncodingAnalysis(codes);
+    //PostEncodingAnalysis(codes,encW);
     unsigned blockN = static_cast<double>(encW)/step+0.5;
     std::string log="";
     bool isCodePut = false;
@@ -89,10 +89,6 @@ std::string GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int 
         for(unsigned i = pos; i < pos+blockN;i++)
         {
             char cToPut = _charMap[codes[i]];
-            if(cToPut == 'X')
-            {
-                std::cout<<"X found!!!\n";
-            }
             log+= cToPut;
             isCodePut = true;
         }
@@ -108,9 +104,135 @@ std::string GDSIIDesignEncoder::Encode(const GDSIILineContainer &container, int 
     }
     return log;
 }
-void GDSIIDesignEncoder::PostEncodingAnalysis(std::vector<CodeType> &codes)
+std::string GDSIIDesignEncoder::EncodeSPApproach(const GDSIILineContainer &container, int pixelSize)
 {
-
+    std::vector<GDSIISuperPixel> pixels;
+    std::set<GDSIILine*> lines;
+    PrepareData(const_cast<GDSIILineContainer&>(container));
+    GDSIISuperPixel pixel(GDSIIPoint(bottomX,bottomY),pixelSize);
+    int encW = container.GetAreaWidth();
+    int encH = container.GetAreaHeight();
+    //it is possible to make encoded area shorter
+    bottomX = container.GetBottomX();
+    bottomY = container.GetBottomY();
+    topX    = bottomX + encW;
+    topY    = bottomY + encH;
+    if(pixel.GetSize() > encH || pixel.GetSize() > encW)
+    {
+        std::cout<<"Encoding failed: pixel does not fit container\n";
+        return "";
+    }
+    unsigned step = pixel._size;
+    pixels.reserve((encW/step)*(encH/step));
+    for(int y = bottomY; y < topY; y+=step)
+    {
+        for(int x = bottomX; x < topX; x+=step)
+        {
+            pixel = GDSIISuperPixel(x,y,step);
+            lines.clear();
+            ExtractLinesForSuperPixel(pixel,lines);
+            CodeType code = EMPTY;
+            switch(lines.size())
+            {
+                case 0:
+                {
+                    code = EMPTY;
+                }break;
+                case 1:
+                {
+                    const GDSIILine* lp = *lines.begin();
+                    code = _lineAnalizer.GetCode(*lp);
+                }break;
+                case 2:
+                {
+                    std::set<GDSIILine*>::iterator it = lines.begin();
+                    GDSIILine l1 = **it;
+                    GDSIILine l2 = **(++it);
+                    code = _lineAnalizer.GetCode(l1,l2);
+                }break;
+                case 3:
+                {
+                    std::set<GDSIILine*>::iterator it = lines.begin();
+                    GDSIILine l1 = **it;
+                    GDSIILine l2 = **(++it);
+                    GDSIILine l3 = **(++it);
+                    code = _lineAnalizer.GetCode(l1,l2,l3);
+                }break;
+                default: code = ERROR_CODE;
+            }
+            pixel._code = code;
+            pixels.push_back(pixel);
+            Validator::tryExecuteValidation(pixels,encW/step);
+            //emit EncodedUpdate()
+        }
+    }
+    unsigned blockN = static_cast<double>(encW)/step+0.5;
+    std::string log="";
+    bool isCodePut = false;
+    for(auto it = pixels.end(); it>=pixels.begin(); it-=blockN)
+    {
+        int pos = pixels.size()-(pixels.end()-(it-blockN));
+        for(unsigned i = pos; i < pos+blockN;i++)
+        {
+            char cToPut = _charMap[pixels[i]._code];
+            log+= cToPut;
+            isCodePut = true;
+        }
+        if(isCodePut)
+        {
+            if(pos!=0)
+            {
+                log+='\r';
+                log+='\n';
+            }
+            isCodePut = false;
+        }
+    }
+    return log;
+}
+void GDSIIDesignEncoder::PostEncodingAnalysis(std::vector<GDSIISuperPixel> &codes, size_t areaWidth)
+{
+    size_t pos = 1;
+    auto it = codes.begin();
+    for(auto it2 = it+1; it2!=codes.end(); it++,it2++,pos++)
+    {
+        if(pos != areaWidth)
+        {
+            auto c1 = it->_code;
+            auto c2 = it2->_code;
+            if(c1 == c2)
+            {
+                if((c1 == L_LW_CORNER) || (c1 == L_UP_CORNER))
+                {
+                    it->_code = EMPTY;
+                    auto it3 = it+areaWidth;
+                    auto it4 = it2+areaWidth;
+                    while((it3->_code == it4->_code) && (it3->_code == VERTIC_CODE))
+                    {
+                        it3->_code = EMPTY;
+                        ++it3;
+                        ++it4;
+                    }
+                }
+                else if((c1 == R_LW_CORNER) || (c1 == L_LW_CORNER))
+                {
+                    it2->_code = EMPTY;
+                    auto it3 = it+areaWidth;
+                    auto it4 = it2+areaWidth;
+                    while((it3->_code == it4->_code) && (it3->_code == VERTIC_CODE))
+                    {
+                        it4->_code = EMPTY;
+                        ++it3;
+                        ++it4;
+                    }
+                }
+            }
+        }
+        else
+        {
+            pos = 0;
+        }
+    }
 }
 void GDSIIDesignEncoder::ExtractLinesForSuperPixel(const GDSIISuperPixel &pix, std::set<GDSIILine *> &container)
 {
@@ -154,7 +276,49 @@ void GDSIIDesignEncoder::ExtractLinesForSuperPixel(const GDSIISuperPixel &pix, s
 
     std::cout<<"Total lines detected: "<<container.size()<<std::endl;
 }
-
+void GDSIIDesignEncoder::ExtractLinesForSuperPixel(GDSIISuperPixel &pix, std::set<GDSIILine *> &lineSet)
+{
+    for(int i = pix._initPoint.GetX(); i<=pix.GetXLimit();i++)
+    {
+        auto search = _xCoordMap.find(i);
+        if(search != _xCoordMap.end())
+        {
+            GDSIILineRefenceSet& set = search->second;
+            for(auto data:set._set)
+            {
+                if(_lineAnalizer.LineBelongToSuperPixel(pix,*data))
+                {
+                    bool isCritical = _lineAnalizer.LineCoincideWithSuperPixelBorder(pix,*data);
+                    if(isCritical)
+                    {
+                        pix.AddRelatedLine(*data);
+                    }
+                    lineSet.insert(data);
+                }
+            }
+        }
+    }
+    for(int i = pix._initPoint.GetY(); i<=pix.GetYLimit();i++)
+    {
+        auto search = _yCoordMap.find(i);
+        if(search != _yCoordMap.end())
+        {
+            GDSIILineRefenceSet& set = search->second;
+            for(auto data:set._set)
+            {
+                if(_lineAnalizer.LineBelongToSuperPixel(pix,*data))
+                {
+                    bool isCritical = _lineAnalizer.LineCoincideWithSuperPixelBorder(pix,*data);
+                    if(isCritical)
+                    {
+                        pix.AddRelatedLine(*data);
+                    }
+                    lineSet.insert(data);
+                }
+            }
+        }
+    }
+}
 void GDSIIDesignEncoder::ConstructLocationMap(GDSIILineContainer &container)
 {
     _locationMap.clear();

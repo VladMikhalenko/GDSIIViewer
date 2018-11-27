@@ -8,6 +8,10 @@
 #include "utils/Encoder/GDSIIDesignEncoder.h"
 #include <fstream>
 
+#include <Python.h>
+#include "utils/Python/PythonHelper/PythonHelper.h"
+#include "utils/Python/PythonHelper/PythonModule.h"
+#include "utils/Python/PythonHelper/PythonMethod.h"
 //функци распределения значений цвета на промежутке y1 y2
 double FindYCoordT(double x1,double y1, double x2,double y2,double x)
 {
@@ -320,10 +324,10 @@ int BoundaryTest()
 
 int DoublingTest()
 {
-    GDSIILine a(20,10,20,90);
+    GDSIILine a(20,20,20,90);
     GDSIILine b(20,90,80,90);
-    GDSIILine c(80,90,80,10);
-    GDSIILine d(80,10,20,10);
+    GDSIILine c(80,90,80,20);
+    GDSIILine d(80,20,20,20);
     GDSIILine m(0,110,110,110);
     GDSIILineContainer C;
     C.AddLine(a);
@@ -335,10 +339,49 @@ int DoublingTest()
     C.SetAreaWidth(120);
     C.SetBottomX(0);
     C.SetBottomY(0);
-    std::cout<<GDSIIDesignEncoder::GetInstance().Encode(C,20);
+    std::cout<<GDSIIDesignEncoder::GetInstance().EncodeSPApproach(C,20);
     return 0;
 }
+int ValidationTest()
+{
+    GDSIILine a(0,20,40,20);
+    GDSIILine b(40,20,40,100);
+    GDSIILine c(40,100,80,100);
+    GDSIILine d(80,100,80,20);
+    GDSIILine e(80,20,100,20);
 
+    GDSIILineContainer C;
+    C.AddLine(a);
+    C.AddLine(b);
+    C.AddLine(c);
+    C.AddLine(d);
+    C.AddLine(e);
+    C.SetAreaHeight(120);
+    C.SetAreaWidth(120);
+    C.SetBottomX(0);
+    C.SetBottomY(0);
+    std::cout<<GDSIIDesignEncoder::GetInstance().EncodeSPApproach(C,20);
+    return 0;
+}
+int PyTest()
+{
+//    PythonHelper::GetInstance();
+//    PythonModule numpy("numpy");
+//    PythonMethod add(numpy,"add");
+//    PyObject* p5 = PyLong_FromLong(5);
+//    PyObject* p4 = PyLong_FromLong(4);
+//    PyObject* tpl = PyTuple_New(2);
+//    PyTuple_SetItem(tpl,0,p5);
+//    PyTuple_SetItem(tpl,1,p4);
+//    std::cout<<PyLong_AsLong(add.Execute(tpl));
+//    Py_DECREF(p5);
+//    Py_DECREF(p4);
+//    Py_DECREF(tpl);
+    Py_Initialize();
+    PyRun_SimpleString("import numpy as np\nprint(np.add(5,3))");
+    Py_Finalize();
+    return 0;
+}
 int main(int argc, char *argv[])
 {
 //    GlobalOptions::SetFileName("D:\\gdsFolder\\Tests\\Bin_AREF_test_with_angle_0");
@@ -347,30 +390,79 @@ int main(int argc, char *argv[])
 //    GDSIIDesignReader reader;
 //    GDSIIDesign* d=reader.MakeModel().get();
 //    delete d;
-//GDSIILine l1(GDSIIPoint(5,1),GDSIIPoint(5,3));
-//GDSIILine l2(GDSIIPoint(2,3),GDSIIPoint(5,3));
-//LineAnalyzer anal;
-//GDSIIPoint cross;
-//bool areCrossing = anal.GetCrossPoint(l1,l2,cross);
-//std::cout<<"Cross["<<(areCrossing? "true":"false")<<"]:["<<cross.GetX()<<","<<cross.GetY()<<"]"<<std::endl;
+//Py_Initialize();
+//PyRun_SimpleString("print('Hello world')");
+//Py_Finalize();
 
-//----------------------------------------CodePrinter(anal.GetCode(l1,l2));
-//GDSIILine ab(2,2,2,8);
-//GDSIILine bc(2,8,8,8);
-//GDSIILine ad(2,2,11,2);
-//GDSIILine ce(8,5,8,8);
-//GDSIILine ef(8,5,11,5);
-//GDSIILine fd(10,2,11,5);
-//GDSIIDesignEncoder &enc = GDSIIDesignEncoder::GetInstance();
-//return RunTEST1();
+    // Initialize the Python interpreter.
+
+//    Py_Initialize();
+//    PyObject* pName, *pModule, *pFunc;
+//    pName = PyUnicode_FromString("numpy");
+//    pModule = PyImport_Import(pName);
+//    Py_DECREF(pName);
+//    if(pModule != NULL)
+//    {
+//        pFunc = PyObject_GetAttrString(oModule,"array");
+//    }
+//    Py_DECREF(pModule);
+
+    //PyRun_SimpleString("print('Hello world')");
+    // Create some Python objects that will later be assigned values.
+
+//    PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+
+//    // Convert the file name to a Python string.
+
+//    pName = PyUnicode_FromString("Simple");//PyString_FromString("Sample");
+//    // Import the file as a Python module.
+
+//    pModule = PyImport_Import(pName);
+
+//    // Create a dictionary for the contents of the module.
+
+//    pDict = PyModule_GetDict(pModule);
+
+//    // Get the add method from the dictionary.
+
+//    pFunc = PyDict_GetItemString(pDict, "add");
+
+//    // Create a Python tuple to hold the arguments to the method.
+
+//    pArgs = PyTuple_New(2);
+
+//    // Convert 2 to a Python integer.
+
+//    pValue = PyLong_FromLong(2);
+
+//    // Set the Python int as the first and second arguments to the method.
+
+//    PyTuple_SetItem(pArgs, 0, pValue);
+
+//    PyTuple_SetItem(pArgs, 1, pValue);
+
+//    // Call the function with the arguments.
+
+//    PyObject* pResult = PyObject_CallObject(pFunc, pArgs);
+
+//    // Print a message if calling the method failed.
+
+//    if(pResult == NULL)
+
+//    printf("Calling the add method failed.\n");
+
+//    // Convert the result to a long from a Python object.
+
+//    long result = PyLong_AsLong(pResult);
+
+    // Destroy the Python interpreter.
+
+    //Py_Finalize();
+
+    // Print the result.
+
+    //printf("The result is %d.\n", result); std::cin.ignore();
+    //return 0;
+    return PyTest();
 //return RunMAIN(argc,argv);
-//return RunDiag2();
-//return RunTEST1();
-//return largeTest();
-//return BoundaryTest();
-//    return writerTest();
-//return Run3LineTest();
-//return DoublingTest();
-return RunMAIN(argc,argv);
-
 }

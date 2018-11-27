@@ -118,7 +118,7 @@ void MainWindow::CalculateWindowPoints(double value){
 void MainWindow::ZoomValueChanged(int value){
     zoomCoef=ZoomConvert(value);
     //qDebug()<<"COEF value:"<<zoomCoef;
-    emit ZoomValueUpdated(zoomCoef);
+    Q_EMIT ZoomValueUpdated(zoomCoef);
 }
 //Calculate window position in global World
 void MainWindow::HorizontalScrollChanged(int value){
@@ -227,7 +227,7 @@ void MainWindow::btnEncodeClick()
     {
         auto item = v[i];
         item.PerformShift();
-        std::string code = GDSIIDesignEncoder::GetInstance().Encode(item,20);
+        std::string code = GDSIIDesignEncoder::GetInstance().EncodeSPApproach(item,20);  //Encode(item,20);
         FileWriter::GetInstance().WriteStringToFile("Code_"+std::to_string(i)+".code",code);
     }
 

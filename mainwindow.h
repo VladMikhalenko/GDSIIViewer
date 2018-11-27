@@ -63,10 +63,10 @@ private:
 
     void ResetWindowBorders();
     void ClearDataBeforeLoading();
-signals:
+Q_SIGNALS:
     void ZoomValueUpdated(double);
 
-private slots:
+private Q_SLOTS:
     void CalculateScrolls(int value);
     void CalculateWindowPoints(double value);
     void ZoomValueChanged(int value);
